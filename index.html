@@ -3,160 +3,745 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>高雄長庚 法規問答系統</title>
+<title>法規問答系統 — 高雄長庚</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --bg: #f0f2f5;
+    --surface: #ffffff;
+    --surface-2: #f7f8fa;
+    --surface-3: #eef0f4;
+    --border: #e2e5ec;
+    --border-light: #eceef2;
+    --text-primary: #0f1923;
+    --text-secondary: #5a6478;
+    --text-muted: #9aa0b0;
+    --accent: #1a3a5c;
+    --accent-light: #e8eef5;
+    --accent-mid: #2c5282;
+    --red: #c0392b;
+    --red-light: #fdf2f1;
+    --green: #1a7a4a;
+    --green-light: #edf7f2;
+    --amber: #b45309;
+    --amber-light: #fef9ee;
+    --radius-sm: 6px;
+    --radius: 10px;
+    --radius-lg: 14px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow: 0 2px 8px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.09), 0 2px 6px rgba(0,0,0,0.05);
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans TC', sans-serif; background: #f5f5f3; color: #1a1a1a; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem; }
-  .container { width: 100%; max-width: 720px; }
-  .header { margin-bottom: 2rem; }
-  .header h1 { font-size: 18px; font-weight: 500; }
-  .header p { font-size: 13px; color: #888; margin-top: 4px; }
-  .card { background: #fff; border-radius: 12px; border: 0.5px solid #e0e0e0; padding: 1.25rem; margin-bottom: 1rem; }
-  .card-secondary { background: #f5f5f3; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
-  .label { font-size: 12px; color: #888; margin-bottom: 6px; }
+
+  body {
+    font-family: 'Noto Sans TC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── Top Nav ── */
+  .topnav {
+    width: 100%;
+    background: var(--accent);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  }
+  .topnav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .topnav-logo {
+    width: 28px; height: 28px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .topnav-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+  .topnav-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.03em;
+  }
+  .topnav-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.08);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .nav-status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    transition: background 0.3s;
+  }
+  .nav-status-dot.connected { background: #4ade80; box-shadow: 0 0 6px rgba(74,222,128,0.5); }
+  .nav-btn {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    background: transparent;
+    border: 0.5px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+  /* ── Layout ── */
+  .page {
+    width: 100%;
+    max-width: 760px;
+    padding: 2rem 1rem 4rem;
+  }
+
+  /* ── Setup Panel ── */
+  .setup-wrap {
+    max-width: 480px;
+    margin: 3rem auto;
+  }
+  .setup-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .setup-icon {
+    width: 56px; height: 56px;
+    background: var(--accent);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin: 0 auto 1rem;
+    box-shadow: var(--shadow-md);
+  }
+  .setup-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+  .setup-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .field-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .field-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 5px;
+    line-height: 1.5;
+  }
   input[type="password"], input[type="text"], textarea {
-    width: 100%; padding: 10px 12px; border: 0.5px solid #d0d0d0; border-radius: 8px;
-    font-size: 14px; font-family: inherit; background: #fff; color: #1a1a1a;
-    outline: none; transition: border-color 0.15s;
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    background: var(--surface-2);
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
   }
-  input:focus, textarea:focus { border-color: #999; }
-  textarea { min-height: 80px; resize: vertical; line-height: 1.5; }
-  button {
-    padding: 9px 18px; border: 0.5px solid #d0d0d0; border-radius: 8px;
-    background: #fff; color: #1a1a1a; font-size: 14px; font-family: inherit;
-    cursor: pointer; transition: background 0.15s;
+  input:focus, textarea:focus {
+    border-color: var(--accent-mid);
+    box-shadow: 0 0 0 3px rgba(44,82,130,0.1);
+    background: var(--surface);
   }
-  button:hover { background: #f0f0ee; }
-  button:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn-primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
-  .btn-primary:hover { background: #333; }
-  .btn-small { font-size: 12px; padding: 4px 10px; color: #888; }
-  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-  .answer-label { font-size: 13px; color: #888; margin-bottom: 12px; }
-  .answer-text { font-size: 15px; line-height: 1.8; }
-  .answer-text p { margin-bottom: 0.75rem; }
-  .answer-text p:last-child { margin-bottom: 0; }
-  .answer-text strong { font-weight: 500; }
-  .answer-text .section-title { font-size: 12px; font-weight: 500; color: #555; text-transform: uppercase; letter-spacing: 0.05em; margin: 1.25rem 0 0.5rem; padding-bottom: 4px; border-bottom: 0.5px solid #e8e8e8; }
-  .answer-text .section-title:first-child { margin-top: 0; }
-  .answer-text ol { padding-left: 0; list-style: none; margin: 0.5rem 0; }
-  .answer-text ol li { display: flex; gap: 10px; padding: 5px 0; font-size: 14px; line-height: 1.6; border-bottom: 0.5px solid #f0f0ee; }
-  .answer-text ol li:last-child { border-bottom: none; }
-  .answer-text ol li .step-num { min-width: 22px; height: 22px; border-radius: 50%; background: #1a1a1a; color: #fff; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
-  .answer-text ol li .step-txt { flex: 1; }
-  .contact-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: #f5f5f3; border-radius: 8px; }
-  .contact-left { display: flex; align-items: center; gap: 10px; }
-  .contact-avatar { width: 32px; height: 32px; border-radius: 50%; background: #fff; border: 0.5px solid #e0e0e0; display: flex; align-items: center; justify-content: center; font-size: 13px; }
-  .contact-name { font-size: 14px; font-weight: 500; }
-  .contact-gsm { font-size: 13px; color: #888; font-family: monospace; }
-  .meta-row { display: flex; gap: 10px; flex-wrap: wrap; }
-  .meta-box { background: #fff; border: 0.5px solid #e0e0e0; border-radius: 8px; padding: 8px 12px; flex: 1; min-width: 140px; }
-  .meta-label { font-size: 11px; color: #aaa; margin-bottom: 3px; }
-  .meta-value { font-size: 13px; font-weight: 500; }
-  .error-box { background: #fff5f5; border: 0.5px solid #fcc; border-radius: 8px; padding: 1rem; }
-  .error-text { font-size: 14px; color: #c00; }
-  .loading { display: flex; align-items: center; gap: 10px; padding: 1rem 0; }
-  .loading-dot { width: 8px; height: 8px; border-radius: 50%; background: #aaa; animation: pulse 1s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-  .loading-text { font-size: 14px; color: #888; }
-  .divider { border: none; border-top: 0.5px solid #e8e8e8; margin: 1.25rem 0; }
-  .question-display { font-size: 15px; font-weight: 500; }
-  .question-label { font-size: 13px; color: #888; margin-bottom: 6px; }
-  .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; display: inline-block; margin-right: 6px; }
-  .status-dot.connected { background: #4caf50; }
-  .status-text { font-size: 13px; color: #888; }
+  textarea {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    min-height: 90px;
+    resize: none;
+    line-height: 1.6;
+  }
+  .btn-primary {
+    width: 100%;
+    padding: 11px 20px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+    margin-top: 4px;
+  }
+  .btn-primary:hover { background: var(--accent-mid); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ── Question Area ── */
+  .question-card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .question-card textarea {
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+  }
+  .question-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    gap: 10px;
+  }
+  .chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+  .chip {
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: var(--surface-3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .chip:hover { background: var(--accent-light); border-color: var(--accent-mid); color: var(--accent); }
+  .send-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 8px 16px;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .send-btn:hover { background: var(--accent-mid); }
+  .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .send-icon { font-size: 12px; }
+
+  /* ── Divider ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 1.5rem 0;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── Answer Section ── */
+  .q-echo {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+  .q-echo-icon {
+    width: 28px; height: 28px;
+    background: var(--accent-light);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .q-echo-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+  .q-echo-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  /* Loading */
+  .loading-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    box-shadow: var(--shadow);
+  }
+  .loading-bar {
+    width: 100%;
+    max-width: 280px;
+    height: 3px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .loading-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-mid));
+    border-radius: 3px;
+    animation: loadingBar 1.6s ease-in-out infinite;
+  }
+  @keyframes loadingBar {
+    0% { width: 0%; margin-left: 0; }
+    50% { width: 70%; }
+    100% { width: 0%; margin-left: 100%; }
+  }
+  .loading-msg {
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  /* Answer cards */
+  .answer-header-card {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-mid) 100%);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-md);
+  }
+  .answer-header-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .answer-header-label::before {
+    content: '';
+    display: inline-block;
+    width: 16px; height: 1px;
+    background: rgba(255,255,255,0.4);
+  }
+  .answer-header-text {
+    font-size: 15px;
+    color: #fff;
+    line-height: 1.8;
+    font-weight: 400;
+  }
+  .answer-header-text strong {
+    font-weight: 600;
+    background: rgba(255,255,255,0.15);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .steps-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+  }
+  .steps-card-header {
+    background: var(--surface-3);
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-light);
+    transition: background 0.1s;
+  }
+  .step-item:last-child { border-bottom: none; }
+  .step-item:hover { background: var(--surface-2); }
+  .step-num {
+    min-width: 24px; height: 24px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-family: 'DM Mono', monospace;
+  }
+  .step-text {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--text-primary);
+    flex: 1;
+  }
+  .step-text strong { font-weight: 600; color: var(--accent); }
+  .step-subs {
+    margin-top: 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .step-sub-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    padding-left: 2px;
+  }
+  .step-sub-dot {
+    color: var(--accent-mid);
+    font-size: 14px;
+    line-height: 1.3;
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+  .step-sub-item strong { font-weight: 600; color: var(--accent); }
+
+  .info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+  }
+  .info-card-header {
+    background: var(--surface-3);
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .info-card-body {
+    padding: 1rem 1.25rem;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: var(--text-primary);
+  }
+  .info-card-body p { margin-bottom: 0.6rem; }
+  .info-card-body p:last-child { margin-bottom: 0; }
+  .info-card-body strong { font-weight: 600; color: var(--accent); }
+
+  /* Contact card */
+  .contact-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+  }
+  .contact-card-header {
+    background: var(--surface-3);
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .contact-item:last-child { border-bottom: none; }
+  .contact-left {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .contact-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .contact-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .contact-title { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+  .contact-gsm {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent-mid);
+    background: var(--accent-light);
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(44,82,130,0.15);
+  }
+
+  /* Meta row */
+  .meta-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .meta-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    box-shadow: var(--shadow-sm);
+  }
+  .meta-pill-icon { font-size: 12px; }
+  .meta-pill-label { color: var(--text-muted); }
+  .meta-pill-value { font-weight: 500; }
+
+  /* Alert / section title in answer */
+  .answer-section-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 4px 0 6px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* Error */
+  .error-card {
+    background: var(--red-light);
+    border: 1px solid #f5c2be;
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-top: 1rem;
+  }
+  .error-card p {
+    font-size: 13px;
+    color: var(--red);
+    line-height: 1.5;
+  }
+
+  /* Utility */
   #mainPanel { display: none; }
-  #setupPanel {}
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <h1>法規問答系統</h1>
-    <p>高雄長庚紀念醫院 急診醫學部</p>
-  </div>
 
-  <!-- Setup Panel -->
-  <div id="setupPanel">
+<!-- Nav -->
+<nav class="topnav">
+  <div class="topnav-brand">
+    <div class="topnav-logo">🏥</div>
+    <div>
+      <div class="topnav-title">法規問答</div>
+      <div class="topnav-sub">高雄長庚紀念醫院 急診醫學部</div>
+    </div>
+  </div>
+  <div class="topnav-actions" id="navActions" style="display:none;">
+    <div class="nav-status">
+      <div class="nav-status-dot" id="statusDot"></div>
+      <span id="statusText">載入中...</span>
+    </div>
+    <button class="nav-btn" onclick="reloadData()">重新載入</button>
+    <button class="nav-btn" onclick="clearKeys()">重設</button>
+  </div>
+</nav>
+
+<!-- Setup Panel -->
+<div class="page" id="setupPanel">
+  <div class="setup-wrap">
+    <div class="setup-header">
+      <div class="setup-icon">🔐</div>
+      <div class="setup-title">設定 API 連線</div>
+      <div class="setup-subtitle">需要 Anthropic 與 Airtable 兩組金鑰，<br>用於問答推理與法規資料庫讀取。</div>
+    </div>
     <div class="card">
-      <div class="label">🔑 設定 API Keys</div>
-      <p style="font-size:13px;color:#888;margin-bottom:12px;">需要兩組 Key：Anthropic（回答問題）與 Airtable（讀取法規資料）</p>
-      <div style="margin-bottom:10px;">
-        <div class="label">Anthropic API Key</div>
+      <div style="margin-bottom:16px;">
+        <div class="field-label">Anthropic API Key</div>
         <input type="password" id="anthropicKeyInput" placeholder="sk-ant-..." />
       </div>
-      <div style="margin-bottom:12px;">
-        <div class="label">Airtable Personal Access Token</div>
+      <div style="margin-bottom:20px;">
+        <div class="field-label">Airtable Personal Access Token</div>
         <input type="password" id="airtableKeyInput" placeholder="pat..." />
-        <p style="font-size:11px;color:#aaa;margin-top:4px;">至 airtable.com → 帳號設定 → Developer Hub → Personal Access Token 建立，需要 data.records:read 權限</p>
+        <div class="field-hint">至 airtable.com → 帳號設定 → Developer Hub → Personal Access Token，需 data.records:read 權限。</div>
       </div>
-      <button class="btn-primary" onclick="saveKeys()" style="width:100%;">確認並載入法規資料</button>
+      <button class="btn-primary" onclick="saveKeys()">確認並載入法規資料 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Main Panel -->
+<div class="page" id="mainPanel">
+
+  <!-- Question Input -->
+  <div class="question-card">
+    <div class="field-label" style="margin-bottom:8px;">提問</div>
+    <textarea id="questionInput" placeholder="描述情境或提問，例如：&#10;現在是晚上11點，來了35個傷患其中8人重大外傷，我要怎麼做？&#10;ECMO只剩1台同時ICU也快滿了怎麼辦？"></textarea>
+    <div class="question-footer">
+      <div class="chips">
+        <button class="chip" onclick="quickAsk('現在晚上11點，來了35個傷患，其中8人重大外傷，我要怎麼做？')">🌙 夜間情境</button>
+        <button class="chip" onclick="quickAsk('ECMO只剩1台，同時ICU也快滿了，怎麼辦？')">⚠️ 資源緊缺</button>
+        <button class="chip" onclick="quickAsk('來了一批燒燙傷患者，電腦系統突然故障，步驟是什麼？')">🔥 複合情境</button>
+        <button class="chip" onclick="quickAsk('指揮官是誰？夜間假日由誰代理？')">👤 指揮體系</button>
+      </div>
+      <button class="send-btn" onclick="askQuestion()" id="askBtn">
+        <span>送出</span>
+        <span class="send-icon">↗</span>
+      </button>
     </div>
   </div>
 
-  <!-- Main Panel -->
-  <div id="mainPanel">
-    <div class="top-bar">
+  <!-- Answer Area -->
+  <div id="answerArea" style="display:none;">
+
+    <div class="divider">分析結果</div>
+
+    <!-- Question Echo -->
+    <div class="q-echo">
+      <div class="q-echo-icon">💬</div>
       <div>
-        <span class="status-dot" id="statusDot"></span>
-        <span class="status-text" id="statusText">載入中...</span>
-      </div>
-      <div style="display:flex;gap:8px;">
-        <button class="btn-small" onclick="reloadData()">重新載入資料</button>
-        <button class="btn-small" onclick="clearKeys()">重設</button>
+        <div class="q-echo-label">您的問題</div>
+        <div class="q-echo-text" id="displayQuestion"></div>
       </div>
     </div>
 
-    <div class="card" style="padding:1rem;">
-      <textarea id="questionInput" placeholder="輸入問題或描述情境，例如：&#10;現在是晚上11點，來了35個傷患其中8人重大外傷，我要怎麼做？&#10;&#10;ECMO只剩1台同時ICU也快滿了怎麼辦？"></textarea>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;">
-        <div class="chips">
-          <button class="btn-small" onclick="quickAsk('現在晚上11點，來了35個傷患，其中8人重大外傷，我要怎麼做？')">夜間情境</button>
-          <button class="btn-small" onclick="quickAsk('ECMO只剩1台，同時ICU也快滿了，怎麼辦？')">資源緊缺</button>
-          <button class="btn-small" onclick="quickAsk('來了一批燒燙傷患者，電腦系統突然故障，步驟是什麼？')">複合情境</button>
-          <button class="btn-small" onclick="quickAsk('指揮官是誰？夜間假日由誰代理？')">指揮體系</button>
-        </div>
-        <button class="btn-primary" onclick="askQuestion()" id="askBtn" style="white-space:nowrap;margin-left:8px;">送出 ↗</button>
+    <!-- Loading -->
+    <div id="loadingIndicator" style="display:none;">
+      <div class="loading-card">
+        <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+        <div class="loading-msg" id="loadingMsg">Claude 正在分析法規資料...</div>
       </div>
     </div>
 
-    <div id="answerArea" style="display:none;">
-      <hr class="divider">
-      <div style="margin-bottom:1.25rem;">
-        <div class="question-label">您的問題</div>
-        <div class="question-display" id="displayQuestion"></div>
+    <!-- Answer Content -->
+    <div id="answerContent" style="display:none;">
+
+      <!-- Main answer -->
+      <div id="answerHeaderCard" class="answer-header-card" style="display:none;">
+        <div class="answer-header-label">回答摘要</div>
+        <div class="answer-header-text" id="answerSummary"></div>
       </div>
 
-      <div id="loadingIndicator" style="display:none;">
-        <div class="loading">
-          <div class="loading-dot"></div>
-          <span class="loading-text" id="loadingMsg">Claude 正在分析法規資料...</span>
+      <!-- Steps -->
+      <div id="stepsCard" class="steps-card" style="display:none;">
+        <div class="steps-card-header">📋 行動步驟</div>
+        <div id="stepsList"></div>
+      </div>
+
+      <!-- Info blocks (non-step paragraphs after steps) -->
+      <div id="infoCard" class="info-card" style="display:none;">
+        <div class="info-card-header">📌 補充說明</div>
+        <div class="info-card-body" id="infoBody"></div>
+      </div>
+
+      <!-- Contacts -->
+      <div id="contactsCard" class="contact-card" style="display:none;">
+        <div class="contact-card-header">👥 相關聯繫人</div>
+        <div id="contactsList"></div>
+      </div>
+
+      <!-- Meta -->
+      <div class="meta-row" id="metaRow">
+        <div class="meta-pill">
+          <span class="meta-pill-icon">📄</span>
+          <span class="meta-pill-label">來源：</span>
+          <span class="meta-pill-value" id="sourceText">大量傷患救護作業要點</span>
         </div>
       </div>
 
-      <div id="answerContent" style="display:none;">
-        <div class="card-secondary">
-          <div class="answer-label">✦ 回答</div>
-          <div class="answer-text" id="answerText"></div>
-        </div>
-
-        <div id="contactsCard" class="card" style="display:none;">
-          <div class="answer-label">👥 相關聯繫人</div>
-          <div id="contactsList" style="display:flex;flex-direction:column;gap:8px;margin-top:4px;"></div>
-        </div>
-
-        <div class="meta-row">
-          <div class="meta-box">
-            <div class="meta-label">參考來源</div>
-            <div class="meta-value" id="sourceText"></div>
-          </div>
-        </div>
-
-        <div id="errorMsg" class="error-box" style="display:none;margin-top:1rem;">
-          <div class="error-text" id="errorText"></div>
-        </div>
+      <!-- Error -->
+      <div id="errorMsg" class="error-card" style="display:none;">
+        <p id="errorText"></p>
       </div>
+
     </div>
   </div>
 </div>
@@ -175,6 +760,7 @@ function saveKeys() {
   localStorage.setItem('cgmh_airtable_key', at);
   document.getElementById('setupPanel').style.display = 'none';
   document.getElementById('mainPanel').style.display = 'block';
+  document.getElementById('navActions').style.display = 'flex';
   loadAirtableData();
 }
 
@@ -183,12 +769,13 @@ function clearKeys() {
   localStorage.removeItem('cgmh_airtable_key');
   document.getElementById('setupPanel').style.display = 'block';
   document.getElementById('mainPanel').style.display = 'none';
+  document.getElementById('navActions').style.display = 'none';
 }
 
 async function loadAirtableData() {
   const token = localStorage.getItem('cgmh_airtable_key');
-  document.getElementById('statusDot').className = 'status-dot';
-  document.getElementById('statusText').textContent = '載入法規資料中...';
+  document.getElementById('statusDot').className = 'nav-status-dot';
+  document.getElementById('statusText').textContent = '載入中...';
   try {
     let records = [], offset = null;
     do {
@@ -209,11 +796,11 @@ async function loadAirtableData() {
       role: r.fields['負責角色'] || '',
     })).filter(r => r.key);
 
-    document.getElementById('statusDot').className = 'status-dot connected';
-    document.getElementById('statusText').textContent = `已載入 ${qaData.length} 筆法規資料`;
+    document.getElementById('statusDot').className = 'nav-status-dot connected';
+    document.getElementById('statusText').textContent = `${qaData.length} 筆法規已載入`;
   } catch (err) {
-    document.getElementById('statusDot').className = 'status-dot';
-    document.getElementById('statusText').textContent = '載入失敗：' + err.message;
+    document.getElementById('statusDot').className = 'nav-status-dot';
+    document.getElementById('statusText').textContent = '載入失敗';
   }
 }
 
@@ -221,16 +808,33 @@ function reloadData() { loadAirtableData(); }
 
 function buildSystemPrompt() {
   let prompt = `你是高雄長庚紀念醫院「大量傷患救護」的法規問答助理。
-請根據以下院內法規問答資料庫，回答使用者的問題或情境。
+請根據以下院內法規問答資料庫，回答使用者的問題。
 
-回答格式規則：
-1. 只根據資料庫內容回答，不要自行發明資訊
-2. 情境題請先用一段話說明適用條件（動員等級、時段、災難類型）
-3. 步驟請用數字清單（1. 2. 3.），每步獨立一行
-4. 聯繫人請用「**姓名**（職稱）GSM:xxxxx」格式
-5. 重要判斷結論用 **粗體** 標示
-6. 回答用繁體中文
-7. 最後一行：【來源：xxx】
+【重要：你必須只回傳一個合法的 JSON 物件，不得有任何前綴文字、說明、或 markdown code block】
+
+JSON 結構如下（所有欄位使用繁體中文）：
+{
+  "summary": "2至4句話說明適用情境、動員等級、關鍵判斷。純文字，不含 markdown。",
+  "steps": [
+    {
+      "title": "步驟主旨（一句話）",
+      "subs": ["子項目1", "子項目2"]
+    }
+  ],
+  "info": "補充說明段落，若無則填空字串",
+  "contacts": [
+    { "name": "姓名", "title": "職稱", "gsm": "號碼", "note": "備註如代理人，若無填空字串" }
+  ],
+  "source": "來源條文名稱"
+}
+
+規則：
+- steps 若無則填空陣列 []
+- contacts 若無則填空陣列 []
+- subs 若無則填空陣列 []
+- summary 必填，不可為空
+- 只根據資料庫內容回答，不自行發明資訊
+- 回傳純 JSON，第一個字元必須是 {，最後一個字元必須是 }
 
 === 法規問答資料庫 ===\n\n`;
 
@@ -246,43 +850,48 @@ function buildSystemPrompt() {
   return prompt;
 }
 
-function renderAnswer(text) {
-  const escaped = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  const lines = escaped.split('\n');
-  let html = '', inOl = false, stepCount = 0;
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) { if (inOl) { html += '</ol>'; inOl = false; stepCount = 0; } continue; }
-    const olMatch = line.match(/^(\d+)[\.、]\s*(.+)/);
-    if (olMatch) {
-      if (!inOl) { html += '<ol>'; inOl = true; stepCount = 0; }
-      stepCount++;
-      const txt = olMatch[2].replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-      html += `<li><span class="step-num">${stepCount}</span><span class="step-txt">${txt}</span></li>`;
-      continue;
-    }
-    if (inOl) { html += '</ol>'; inOl = false; stepCount = 0; }
-    const isSectionTitle = /^\*\*[^*]+\*\*$/.test(line) || /^#{1,3}\s/.test(line) || (line.endsWith('：') && line.length < 20);
-    if (isSectionTitle) {
-      const t = line.replace(/^\*\*|\*\*$/g,'').replace(/^#{1,3}\s*/,'');
-      html += `<div class="section-title">${t}</div>`;
-      continue;
-    }
-    const para = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    html += `<p>${para}</p>`;
+function parseAnswer(text) {
+  // 1. Strip markdown code fences if present
+  let clean = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+
+  // 2. If JSON is truncated (API hit max_tokens), attempt to auto-close it
+  if (!clean.endsWith('}')) {
+    // Close any open arrays/objects greedily
+    let open = 0;
+    for (const ch of clean) { if (ch==='{' || ch==='[') open++; else if (ch==='}' || ch===']') open--; }
+    // Remove trailing incomplete key/value (after last complete comma or opening brace)
+    clean = clean.replace(/,\s*"[^"]*"\s*:\s*[^,}\]]*$/, '');
+    clean = clean.replace(/,\s*"[^"]*"\s*$/, '');
+    // Close remaining open structures
+    const stack = [];
+    for (const ch of clean) { if (ch==='{') stack.push('}'); else if (ch==='[') stack.push(']'); else if (ch==='}' || ch===']') stack.pop(); }
+    clean = clean + stack.reverse().join('');
   }
-  if (inOl) html += '</ol>';
-  return html;
+
+  try {
+    const d = JSON.parse(clean);
+    return {
+      summary:  typeof d.summary  === 'string' ? d.summary  : '',
+      steps:    Array.isArray(d.steps)    ? d.steps    : [],
+      info:     typeof d.info     === 'string' ? d.info     : '',
+      contacts: Array.isArray(d.contacts) ? d.contacts : [],
+      source:   typeof d.source   === 'string' ? d.source   : '大量傷患救護作業要點',
+    };
+  } catch (e) {
+    // Show a friendly parse error instead of raw JSON
+    return {
+      summary: '',
+      steps: [],
+      info: '⚠️ 回應格式解析失敗，請再試一次。\n\n' + clean.slice(0, 300),
+      contacts: [],
+      source: '大量傷患救護作業要點'
+    };
+  }
 }
 
-function parseContacts(text) {
-  const results = [];
-  const pattern = /\*\*([^*]+)\*\*[（(]([^）)]+)[）)]\s*GSM[:：]\s*([\d\-]+)/g;
-  let m;
-  while ((m = pattern.exec(text)) !== null) {
-    results.push({ name: m[1], title: m[2], gsm: m[3] });
-  }
-  return results;
+function renderInline(text) {
+  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 }
 
 function quickAsk(q) {
@@ -293,7 +902,7 @@ function quickAsk(q) {
 async function askQuestion() {
   const q = document.getElementById('questionInput').value.trim();
   if (!q) return;
-  if (qaData.length === 0) { alert('法規資料尚未載入，請稍候或點擊「重新載入資料」'); return; }
+  if (qaData.length === 0) { alert('法規資料尚未載入，請稍候或點擊「重新載入」'); return; }
   const apiKey = localStorage.getItem('cgmh_anthropic_key');
   if (!apiKey) { clearKeys(); return; }
 
@@ -304,7 +913,7 @@ async function askQuestion() {
   document.getElementById('errorMsg').style.display = 'none';
   document.getElementById('askBtn').disabled = true;
 
-  const msgs = ['Claude 正在分析法規資料...', '比對適用條文中...', '整理回答內容...'];
+  const msgs = ['Claude 正在分析法規資料...', '比對適用條文中...', '整理回答內容...', '確認步驟與聯繫人...'];
   let mi = 0;
   const timer = setInterval(() => { mi = (mi+1) % msgs.length; document.getElementById('loadingMsg').textContent = msgs[mi]; }, 1800);
 
@@ -319,7 +928,7 @@ async function askQuestion() {
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-5',
-        max_tokens: 1000,
+        max_tokens: 2000,
         system: buildSystemPrompt(),
         messages: [{ role: 'user', content: q }]
       })
@@ -329,24 +938,61 @@ async function askQuestion() {
     if (!res.ok) throw new Error(data.error?.message || 'API 錯誤 ' + res.status);
 
     const fullText = data.content?.[0]?.text || '';
-    const sourceMatch = fullText.match(/【來源：([^】]+)】/);
-    const cleanText = fullText.replace(/【來源：[^】]+】/g, '').trim();
+    const parsed = parseAnswer(fullText);
 
+    // Render
     document.getElementById('loadingIndicator').style.display = 'none';
     document.getElementById('answerContent').style.display = 'block';
-    document.getElementById('answerText').innerHTML = renderAnswer(cleanText);
-    document.getElementById('sourceText').textContent = sourceMatch ? sourceMatch[1] : '大量傷患救護作業要點';
 
-    const contacts = parseContacts(fullText);
-    if (contacts.length > 0) {
+    // Summary card — now a plain string
+    if (parsed.summary) {
+      document.getElementById('answerHeaderCard').style.display = 'block';
+      document.getElementById('answerSummary').innerHTML = parsed.summary.replace(/\n/g, '<br>');
+    } else {
+      document.getElementById('answerHeaderCard').style.display = 'none';
+    }
+
+    // Steps card
+    if (parsed.steps.length) {
+      document.getElementById('stepsCard').style.display = 'block';
+      document.getElementById('stepsList').innerHTML = parsed.steps.map((s, i) => {
+        const subsHtml = s.subs && s.subs.length
+          ? `<div class="step-subs">${s.subs.map(sub =>
+              `<div class="step-sub-item">
+                <span class="step-sub-dot">›</span>
+                <span>${renderInline(sub)}</span>
+              </div>`
+            ).join('')}</div>`
+          : '';
+        return `<div class="step-item">
+          <div class="step-num">${i+1}</div>
+          <div class="step-text">${renderInline(s.title)}${subsHtml}</div>
+        </div>`;
+      }).join('');
+    } else {
+      document.getElementById('stepsCard').style.display = 'none';
+    }
+
+    // Info card — now a plain string
+    if (parsed.info && parsed.info.trim()) {
+      document.getElementById('infoCard').style.display = 'block';
+      document.getElementById('infoBody').innerHTML = parsed.info.trim().split('\n')
+        .filter(l => l.trim())
+        .map(l => `<p>${renderInline(l)}</p>`).join('');
+    } else {
+      document.getElementById('infoCard').style.display = 'none';
+    }
+
+    // Contacts — now has optional .note field
+    if (parsed.contacts.length) {
       document.getElementById('contactsCard').style.display = 'block';
-      document.getElementById('contactsList').innerHTML = contacts.map(c => `
-        <div class="contact-row">
+      document.getElementById('contactsList').innerHTML = parsed.contacts.map(c => `
+        <div class="contact-item">
           <div class="contact-left">
-            <div class="contact-avatar">👤</div>
+            <div class="contact-avatar">${c.name.charAt(0)}</div>
             <div>
               <div class="contact-name">${c.name}</div>
-              <div style="font-size:12px;color:#888;">${c.title}</div>
+              <div class="contact-title">${c.title}${c.note ? ' · ' + c.note : ''}</div>
             </div>
           </div>
           <span class="contact-gsm">GSM ${c.gsm}</span>
@@ -355,11 +1001,17 @@ async function askQuestion() {
     } else {
       document.getElementById('contactsCard').style.display = 'none';
     }
+
+    // Source
+    document.getElementById('sourceText').textContent = parsed.source;
+
   } catch (err) {
     clearInterval(timer);
     document.getElementById('loadingIndicator').style.display = 'none';
     document.getElementById('answerContent').style.display = 'block';
-    document.getElementById('answerText').textContent = '';
+    document.getElementById('answerHeaderCard').style.display = 'none';
+    document.getElementById('stepsCard').style.display = 'none';
+    document.getElementById('infoCard').style.display = 'none';
     document.getElementById('contactsCard').style.display = 'none';
     document.getElementById('errorMsg').style.display = 'block';
     document.getElementById('errorText').textContent = '發生錯誤：' + err.message;
@@ -371,12 +1023,14 @@ document.getElementById('questionInput').addEventListener('keydown', e => {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askQuestion(); }
 });
 
-// 自動初始化
+// Auto-init
 if (localStorage.getItem('cgmh_anthropic_key') && localStorage.getItem('cgmh_airtable_key')) {
   document.getElementById('setupPanel').style.display = 'none';
   document.getElementById('mainPanel').style.display = 'block';
+  document.getElementById('navActions').style.display = 'flex';
   loadAirtableData();
 }
 </script>
 </body>
 </html>
+
