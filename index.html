@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>法規智慧顧問 · 高雄長庚急診</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0E1A;
+    --surface: #111827;
+    --surface2: #1C2333;
+    --border: #2A3548;
+    --red: #FF3B3B;
+    --red-dim: rgba(255,59,59,0.12);
+    --orange: #FF8C00;
+    --orange-dim: rgba(255,140,0,0.12);
+    --green: #00C896;
+    --green-dim: rgba(0,200,150,0.12);
+    --yellow: #FFD600;
+    --yellow-dim: rgba(255,214,0,0.12);
+    --blue: #4A9EFF;
+    --blue-dim: rgba(74,158,255,0.12);
+    --text: #E8EDF5;
+    --text2: #8A98B0;
+    --text3: #4A5568;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Noto Sans TC', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 8px var(--red);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .header-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text);
+  }
+  .header-sub {
+    font-size: 11px;
+    color: var(--text2);
+    margin-left: auto;
+    font-family: var(--mono);
+  }
+
+  /* ── Main ── */
+  main {
+    flex: 1;
+    padding: 16px;
+    max-width: 540px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* ── Config Banner ── */
+  .config-banner {
+    background: var(--yellow-dim);
+    border: 1px solid rgba(255,214,0,0.3);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    color: var(--yellow);
+    display: none;
+  }
+  .config-banner.show { display: block; }
+  .config-banner strong { font-weight: 700; display: block; margin-bottom: 4px; }
+
+  /* ── Settings ── */
+  .settings-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .settings-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text2);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .setting-row {
+    margin-bottom: 10px;
+  }
+  .setting-label {
+    font-size: 11px;
+    color: var(--text2);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .setting-label .req {
+    color: var(--red);
+    font-size: 10px;
+  }
+  .setting-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .setting-input:focus { border-color: var(--blue); }
+  .setting-input::placeholder { color: var(--text3); }
+  .save-btn {
+    width: 100%;
+    background: var(--blue);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 9px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: opacity 0.15s;
+  }
+  .save-btn:hover { opacity: 0.85; }
+
+  /* ── Quick chips ── */
+  .chips-label {
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 8px;
+    font-family: var(--mono);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .chip {
+    font-size: 11px;
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    cursor: pointer;
+    background: var(--surface);
+    color: var(--text2);
+    font-family: var(--sans);
+    transition: all 0.12s;
+    white-space: nowrap;
+  }
+  .chip:hover {
+    border-color: var(--blue);
+    color: var(--blue);
+    background: var(--blue-dim);
+  }
+
+  /* ── Input ── */
+  .input-area {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 16px;
+    transition: border-color 0.15s;
+  }
+  .input-area:focus-within { border-color: var(--blue); }
+  textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--text);
+    resize: none;
+    min-height: 72px;
+    line-height: 1.6;
+  }
+  textarea::placeholder { color: var(--text3); }
+  .input-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+  .char-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+  }
+  .submit-btn {
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+    letter-spacing: 0.03em;
+  }
+  .submit-btn:hover { opacity: 0.85; }
+  .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .submit-btn .arrow { font-size: 16px; }
+
+  /* ── Result ── */
+  .result-area {}
+
+  .thinking {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    color: var(--text2);
+    font-size: 13px;
+    display: none;
+  }
+  .thinking.show { display: block; }
+  .thinking-bar {
+    height: 2px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 12px;
+    overflow: hidden;
+  }
+  .thinking-fill {
+    height: 100%;
+    background: var(--blue);
+    border-radius: 2px;
+    animation: thinking 1.5s ease-in-out infinite;
+  }
+  @keyframes thinking {
+    0% { width: 0%; margin-left: 0; }
+    50% { width: 60%; margin-left: 20%; }
+    100% { width: 0%; margin-left: 100%; }
+  }
+
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    animation: slideIn 0.25s ease;
+    display: none;
+  }
+  .result-card.show { display: block; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Verdict */
+  .verdict {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .verdict-level {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .verdict-level.red { color: var(--red); }
+  .verdict-level.orange { color: var(--orange); }
+  .verdict-level.green { color: var(--green); }
+  .verdict-level.yellow { color: var(--yellow); }
+  .verdict-level.blue { color: var(--blue); }
+  .verdict-sub {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  /* Section */
+  .section {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section:last-child { border-bottom: none; }
+  .section-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 10px;
+    font-family: var(--mono);
+  }
+
+  /* Checklist */
+  .checklist { list-style: none; }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 5px 0;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+    border-bottom: 1px solid var(--border);
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .check-box {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--text3);
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* Role table */
+  .role-list { list-style: none; }
+  .role-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .role-item:last-child { border-bottom: none; }
+  .role-name {
+    color: var(--blue);
+    font-weight: 500;
+    min-width: 100px;
+    flex-shrink: 0;
+    font-size: 12px;
+  }
+  .role-arrow {
+    color: var(--text3);
+    margin: 0 6px;
+    flex-shrink: 0;
+  }
+  .role-task {
+    color: var(--text);
+    flex: 1;
+    line-height: 1.5;
+  }
+
+  /* Source */
+  .source-line {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .source-dot { color: var(--text3); }
+
+  /* Error */
+  .error-card {
+    background: var(--red-dim);
+    border: 1px solid rgba(255,59,59,0.3);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--red);
+    display: none;
+  }
+  .error-card.show { display: block; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 16px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-dot" id="status-dot"></div>
+  <div class="header-title">法規智慧顧問</div>
+  <div class="header-sub">高雄長庚急診</div>
+</header>
+
+<main>
+
+  <!-- 設定面板 -->
+  <div class="settings-panel" id="settings-panel">
+    <div class="settings-title">⚙ 初始設定（一次性）</div>
+    <div class="setting-row">
+      <div class="setting-label">
+        Anthropic API Key <span class="req">必填</span>
+      </div>
+      <input type="password" class="setting-input" id="api-key"
+        placeholder="sk-ant-api03-..." autocomplete="off"/>
+    </div>
+    <div class="setting-row">
+      <div class="setting-label">
+        Airtable API Token <span class="req">必填</span>
+      </div>
+      <input type="password" class="setting-input" id="at-token"
+        placeholder="patXXXXXXXXXXXXXX" autocomplete="off"/>
+    </div>
+    <button class="save-btn" onclick="saveConfig()">儲存並開始使用</button>
+  </div>
+
+  <div class="config-banner" id="config-banner">
+    <strong>⚠ 請先完成設定</strong>
+    請在上方填入 API Key 和 Airtable Token 後儲存。
+  </div>
+
+  <!-- 快速情境 -->
+  <div class="chips-label">常見情境快速輸入</div>
+  <div class="chips">
+    <div class="chip" onclick="setQ('8位重傷、4位中傷、10位輕傷同時入院，現在是夜間')">夜間22人入院</div>
+    <div class="chip" onclick="setQ('發生化學物質外洩，有多名傷患吸入毒氣送來急診')">毒化災傷患</div>
+    <div class="chip" onclick="setQ('大樓火災，有燒燙傷及吸入性損傷傷患陸續送達')">火災燒燙傷</div>
+    <div class="chip" onclick="setQ('加護病房已滿床，急診有重傷患需要ICU')">ICU床位不足</div>
+    <div class="chip" onclick="setQ('ECMO機器只剩1台，有新的重症患者需要使用')">ECMO緊急調度</div>
+    <div class="chip" onclick="setQ('大量傷患狀況已經穩定，如何宣布解除？')">狀況解除程序</div>
+  </div>
+
+  <!-- 輸入區 -->
+  <div class="input-area">
+    <textarea id="q-input" placeholder="描述目前的實務情境，例如：現在是假日晚上，急診突然來了30位地震傷患，請問如何處理？"
+      oninput="updateChar()" maxlength="500"></textarea>
+    <div class="input-footer">
+      <span class="char-count" id="char-count">0 / 500</span>
+      <button class="submit-btn" id="submit-btn" onclick="query()">
+        查詢 <span class="arrow">→</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 思考中 -->
+  <div class="thinking" id="thinking">
+    正在查詢法規知識庫並分析情境…
+    <div class="thinking-bar"><div class="thinking-fill"></div></div>
+  </div>
+
+  <!-- 結果卡片 -->
+  <div class="result-card" id="result-card">
+    <div class="verdict" id="verdict-area"></div>
+    <div class="section" id="action-area"></div>
+    <div class="section" id="role-area"></div>
+    <div class="section" id="source-area"></div>
+  </div>
+
+  <!-- 錯誤 -->
+  <div class="error-card" id="error-card"></div>
+
+</main>
+
+<footer>高雄長庚急診醫學部 · 法規智慧顧問系統</footer>
+
+<script>
+// ── 設定 ──
+const BASE_ID = 'app4I4h25azllFSve';
+const TABLE_ID = 'tblaKjjZVMCnKdsNT';
+
+function saveConfig() {
+  const key = document.getElementById('api-key').value.trim();
+  const token = document.getElementById('at-token').value.trim();
+  if (!key || !token) {
+    alert('請填入所有欄位');
+    return;
+  }
+  sessionStorage.setItem('ANTHROPIC_KEY', key);
+  sessionStorage.setItem('AT_TOKEN', token);
+  document.getElementById('settings-panel').style.display = 'none';
+  document.getElementById('status-dot').style.background = '#00C896';
+  document.getElementById('status-dot').style.boxShadow = '0 0 8px #00C896';
+}
+
+function getConfig() {
+  return {
+    key: sessionStorage.getItem('ANTHROPIC_KEY'),
+    token: sessionStorage.getItem('AT_TOKEN')
+  };
+}
+
+// ── UI 工具 ──
+function updateChar() {
+  const len = document.getElementById('q-input').value.length;
+  document.getElementById('char-count').textContent = `${len} / 500`;
+}
+
+function setQ(text) {
+  document.getElementById('q-input').value = text;
+  updateChar();
+  document.getElementById('q-input').focus();
+}
+
+function setLoading(on) {
+  document.getElementById('thinking').className = 'thinking' + (on ? ' show' : '');
+  document.getElementById('submit-btn').disabled = on;
+  document.getElementById('result-card').className = 'result-card';
+  document.getElementById('error-card').className = 'error-card';
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-card');
+  el.textContent = '⚠ ' + msg;
+  el.className = 'error-card show';
+}
+
+// ── Step 1：查 Airtable ──
+async function searchAirtable(query, token) {
+  // 搜尋多個關鍵詞以提高命中率
+  const keywords = query.replace(/[，。？！、]/g, ' ').split(/\s+/)
+    .filter(w => w.length >= 2).slice(0, 4);
+
+  const formula = keywords.map(k =>
+    `OR(SEARCH("${k}",{問題關鍵字}),SEARCH("${k}",{常見問法}),SEARCH("${k}",{標準答案}),SEARCH("${k}",{類別}))`
+  ).join(',');
+
+  const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}` +
+    `?filterByFormula=OR(${formula})&maxRecords=8`;
+
+  const resp = await fetch(url, {
+    headers: { 'Authorization': 'Bearer ' + token }
+  });
+  if (!resp.ok) throw new Error('Airtable 查詢失敗，請確認 Token');
+  const data = await resp.json();
+  return data.records || [];
+}
+
+// ── Step 2：組成法規脈絡 ──
+function buildContext(records) {
+  if (records.length === 0) return '（知識庫中未找到直接相關條文）';
+  return records.map(r => {
+    const f = r.fields;
+    return [
+      `【${f['問題關鍵字'] || ''}】`,
+      `法規：${f['法規名稱'] || ''}`,
+      `條文：${f['來源條文'] || ''}`,
+      `內容：${f['標準答案'] || ''}`,
+      `行動步驟：${f['行動步驟'] || ''}`,
+      `負責角色：${f['負責角色'] || ''}`,
+      `生效日期：${f['法規生效日期'] || ''}`
+    ].filter(x => !x.endsWith('：')).join('\n');
+  }).join('\n\n---\n\n');
+}
+
+// ── Step 3：呼叫 Claude ──
+async function callClaude(situation, context, apiKey) {
+  const systemPrompt = `你是高雄長庚紀念醫院急診醫學部的法規智慧顧問。
+根據提供的法規知識庫內容，分析實務情境，輸出嚴格格式的 JSON。
+
+輸出格式（只回傳 JSON，不要任何其他文字）：
+{
+  "verdict": {
+    "level": "C級動員" 或 "B級動員" 或 "A級動員" 或 "不需啟動" 或 "需確認" 或其他判斷，
+    "color": "red" 或 "orange" 或 "green" 或 "yellow" 或 "blue",
+    "emoji": "🔴" 或 "🟠" 或 "✅" 或 "⚠️" 等,
+    "sub": "一行補充說明，含關鍵數字或觸發條件，不超過40字"
+  },
+  "actions": ["立即行動1，不超過20字", "立即行動2", "立即行動3", "立即行動4", "立即行動5"],
+  "roles": [
+    {"name": "職稱", "task": "任務，一句話不超過25字"},
+    {"name": "職稱", "task": "任務"}
+  ],
+  "source": "來源條文編號",
+  "date": "法規生效日期"
+}
+
+規則：
+- actions 最多5項，每項不超過20字
+- roles 最多5個職稱，task 不超過25字
+- 若知識庫無相關條文，verdict.level 寫「知識庫未收錄」，color 用 yellow
+- 全程繁體中文`;
+
+  const userMsg = `【情境】${situation}\n\n【相關法規知識庫】\n${context}`;
+
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userMsg }]
+    })
+  });
+
+  if (!resp.ok) {
+    const err = await resp.json();
+    throw new Error(err.error?.message || 'Claude API 錯誤');
+  }
+
+  const data = await resp.json();
+  const text = data.content[0].text;
+  const clean = text.replace(/```json|```/g, '').trim();
+  return JSON.parse(clean);
+}
+
+// ── Step 4：渲染結果 ──
+function renderResult(result) {
+  const v = result.verdict;
+
+  // Verdict
+  document.getElementById('verdict-area').innerHTML = `
+    <div class="verdict-level ${v.color}">${v.emoji} ${v.level}</div>
+    <div class="verdict-sub">${v.sub}</div>
+  `;
+
+  // Actions
+  const actions = (result.actions || []).map(a =>
+    `<li><div class="check-box"></div><span>${a}</span></li>`
+  ).join('');
+  document.getElementById('action-area').innerHTML = `
+    <div class="section-title">立即執行</div>
+    <ul class="checklist">${actions}</ul>
+  `;
+
+  // Roles
+  const roles = (result.roles || []).map(r =>
+    `<li class="role-item">
+      <span class="role-name">${r.name}</span>
+      <span class="role-arrow">→</span>
+      <span class="role-task">${r.task}</span>
+    </li>`
+  ).join('');
+  document.getElementById('role-area').innerHTML = `
+    <div class="section-title">各職稱任務</div>
+    <ul class="role-list">${roles}</ul>
+  `;
+
+  // Source
+  document.getElementById('source-area').innerHTML = `
+    <div class="source-line">
+      <span>📄</span>
+      <span>${result.source || '—'}</span>
+      <span class="source-dot">·</span>
+      <span>${result.date || '—'}</span>
+    </div>
+  `;
+
+  document.getElementById('result-card').className = 'result-card show';
+}
+
+// ── 主查詢流程 ──
+async function query() {
+  const { key, token } = getConfig();
+  if (!key || !token) {
+    document.getElementById('config-banner').className = 'config-banner show';
+    document.getElementById('settings-panel').style.display = 'block';
+    return;
+  }
+
+  const situation = document.getElementById('q-input').value.trim();
+  if (!situation) return;
+
+  setLoading(true);
+
+  try {
+    // 1. 查 Airtable
+    const records = await searchAirtable(situation, token);
+
+    // 2. 組脈絡
+    const context = buildContext(records);
+
+    // 3. 呼叫 Claude
+    const result = await callClaude(situation, context, key);
+
+    // 4. 顯示
+    renderResult(result);
+  } catch(e) {
+    showError(e.message);
+  } finally {
+    setLoading(false);
+  }
+}
+
+// Enter 送出
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.ctrlKey) query();
+});
+
+// 初始化
+window.addEventListener('load', () => {
+  const { key, token } = getConfig();
+  if (key && token) {
+    document.getElementById('settings-panel').style.display = 'none';
+    document.getElementById('status-dot').style.background = '#00C896';
+    document.getElementById('status-dot').style.boxShadow = '0 0 8px #00C896';
+  }
+});
+</script>
+</body>
+</html>
