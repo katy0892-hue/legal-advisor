@@ -2,295 +2,390 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>法規智慧顧問 · 高雄長庚急診</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0A0E1A;
-    --surface: #111827;
-    --surface2: #1C2333;
-    --border: #2A3548;
-    --red: #FF3B3B;
-    --red-dim: rgba(255,59,59,0.12);
-    --orange: #FF8C00;
-    --orange-dim: rgba(255,140,0,0.12);
-    --green: #00C896;
-    --green-dim: rgba(0,200,150,0.12);
-    --yellow: #FFD600;
-    --yellow-dim: rgba(255,214,0,0.12);
-    --blue: #4A9EFF;
-    --blue-dim: rgba(74,158,255,0.12);
-    --text: #E8EDF5;
-    --text2: #8A98B0;
-    --text3: #4A5568;
-    --mono: 'JetBrains Mono', monospace;
-    --sans: 'Noto Sans TC', sans-serif;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; display: flex; flex-direction: column; }
+:root {
+  --bg: #0A0E1A; --surface: #111827; --surface2: #1C2333;
+  --border: #2A3548; --border2: #1E2A3A;
+  --red: #FF3B3B; --red-dim: rgba(255,59,59,0.1);
+  --orange: #FF8C00; --orange-dim: rgba(255,140,0,0.1);
+  --green: #00C896; --green-dim: rgba(0,200,150,0.1);
+  --yellow: #FFD600; --yellow-dim: rgba(255,214,0,0.1);
+  --blue: #4A9EFF; --blue-dim: rgba(74,158,255,0.1);
+  --text: #E8EDF5; --text2: #8A98B0; --text3: #4A5568;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Noto Sans TC', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
 
-  header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .header-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 8px var(--green);
-    animation: pulse 2s ease-in-out infinite;
-  }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-  .header-title { font-size: 14px; font-weight: 700; letter-spacing: 0.05em; }
-  .header-sub { font-size: 11px; color: var(--text2); margin-left: auto; font-family: var(--mono); }
+/* Header */
+header {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 10px 16px; display: flex; align-items: center; gap: 10px;
+  position: sticky; top: 0; z-index: 200;
+}
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+.h-title { font-size: 14px; font-weight: 700; }
+.h-sub { font-size: 11px; color: var(--text2); margin-left: auto; font-family: var(--mono); }
 
-  main { flex: 1; padding: 16px; max-width: 540px; margin: 0 auto; width: 100%; }
+/* Layout */
+.layout { display: flex; height: calc(100vh - 45px); }
 
-  .chips-label { font-size: 11px; color: var(--text3); margin-bottom: 8px; font-family: var(--mono); }
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-  .chip {
-    font-size: 11px; padding: 5px 10px;
-    border: 1px solid var(--border); border-radius: 20px;
-    cursor: pointer; background: var(--surface); color: var(--text2);
-    font-family: var(--sans); transition: all 0.12s; white-space: nowrap;
-  }
-  .chip:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+/* Left: 查詢區 */
+.left { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
 
-  .input-area {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 12px; margin-bottom: 16px;
-    transition: border-color 0.15s;
-  }
-  .input-area:focus-within { border-color: var(--blue); }
-  textarea {
-    width: 100%; background: transparent; border: none; outline: none;
-    font-family: var(--sans); font-size: 14px; color: var(--text);
-    resize: none; min-height: 72px; line-height: 1.6;
-  }
-  textarea::placeholder { color: var(--text3); }
-  .input-footer {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border);
-  }
-  .char-count { font-family: var(--mono); font-size: 11px; color: var(--text3); }
-  .submit-btn {
-    background: var(--red); color: white; border: none; border-radius: 6px;
-    padding: 8px 20px; font-family: var(--sans); font-size: 13px; font-weight: 700;
-    cursor: pointer; display: flex; align-items: center; gap: 6px;
-    transition: all 0.15s; letter-spacing: 0.03em;
-  }
-  .submit-btn:hover { opacity: 0.85; }
-  .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+/* Right: 通訊錄 */
+.right {
+  width: 240px; background: var(--surface); border-left: 1px solid var(--border);
+  overflow-y: auto; flex-shrink: 0;
+}
+.right-title {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text3); padding: 12px 14px 8px; border-bottom: 1px solid var(--border);
+  font-family: var(--mono); position: sticky; top: 0; background: var(--surface); z-index: 10;
+}
+.contact-group { border-bottom: 1px solid var(--border2); }
+.group-name {
+  font-size: 10px; font-weight: 700; color: var(--text3); padding: 8px 14px 4px;
+  text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--mono);
+}
+.contact-item {
+  display: flex; align-items: center; padding: 7px 14px; gap: 8px;
+  transition: background 0.1s; cursor: default;
+}
+.contact-item:hover { background: var(--surface2); }
+.contact-info { flex: 1; min-width: 0; }
+.contact-name { font-size: 12px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.contact-role { font-size: 10px; color: var(--text3); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.call-btn {
+  background: var(--green-dim); border: 1px solid rgba(0,200,150,0.3);
+  border-radius: 5px; padding: 4px 7px; font-family: var(--mono);
+  font-size: 10px; color: var(--green); text-decoration: none;
+  white-space: nowrap; flex-shrink: 0; transition: all 0.12s;
+}
+.call-btn:hover { background: rgba(0,200,150,0.2); }
 
-  .thinking {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 20px; text-align: center;
-    color: var(--text2); font-size: 13px; display: none;
-  }
-  .thinking.show { display: block; }
-  .thinking-bar { height: 2px; background: var(--border); border-radius: 2px; margin-top: 12px; overflow: hidden; }
-  .thinking-fill { height: 100%; background: var(--blue); border-radius: 2px; animation: thinking 1.5s ease-in-out infinite; }
-  @keyframes thinking { 0%{width:0%;margin-left:0} 50%{width:60%;margin-left:20%} 100%{width:0%;margin-left:100%} }
+/* Chips */
+.chips-label { font-size: 10px; color: var(--text3); font-family: var(--mono); }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip {
+  font-size: 11px; padding: 4px 10px; border: 1px solid var(--border);
+  border-radius: 20px; cursor: pointer; background: var(--surface2);
+  color: var(--text2); transition: all 0.12s;
+}
+.chip:hover { border-color: var(--blue); color: var(--blue); }
 
-  .result-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; overflow: hidden; margin-bottom: 12px;
-    animation: slideIn 0.25s ease; display: none;
-  }
-  .result-card.show { display: block; }
-  @keyframes slideIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+/* Input */
+.input-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px; transition: border-color 0.15s; }
+.input-box:focus-within { border-color: var(--blue); }
+textarea {
+  width: 100%; background: transparent; border: none; outline: none;
+  font-family: var(--sans); font-size: 13px; color: var(--text);
+  resize: none; min-height: 60px; line-height: 1.6;
+}
+textarea::placeholder { color: var(--text3); }
+.input-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); }
+.char { font-family: var(--mono); font-size: 10px; color: var(--text3); }
+.send-btn {
+  background: var(--red); color: white; border: none; border-radius: 6px;
+  padding: 7px 16px; font-family: var(--sans); font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.send-btn:disabled { opacity: .4; cursor: not-allowed; }
+.send-btn:hover:not(:disabled) { opacity: .85; }
 
-  .verdict { padding: 16px; border-bottom: 1px solid var(--border); }
-  .verdict-level { font-size: 22px; font-weight: 900; letter-spacing: -0.01em; line-height: 1.2; margin-bottom: 4px; }
-  .verdict-level.red { color: var(--red); }
-  .verdict-level.orange { color: var(--orange); }
-  .verdict-level.green { color: var(--green); }
-  .verdict-level.yellow { color: var(--yellow); }
-  .verdict-level.blue { color: var(--blue); }
-  .verdict-sub { font-size: 12px; color: var(--text2); line-height: 1.5; }
+/* Loading */
+.loading { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; color: var(--text2); font-size: 12px; display: none; }
+.loading.show { display: block; }
+.bar { height: 2px; background: var(--border); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--blue); animation: scan 1.4s ease-in-out infinite; }
+@keyframes scan { 0%{width:0;margin-left:0} 50%{width:55%;margin-left:22%} 100%{width:0;margin-left:100%} }
 
-  .section { padding: 12px 16px; border-bottom: 1px solid var(--border); }
-  .section:last-child { border-bottom: none; }
-  .section-title { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; font-family: var(--mono); }
+/* Result */
+.result { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; display: none; animation: up .2s ease; }
+.result.show { display: block; }
+@keyframes up { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
 
-  .checklist { list-style: none; }
-  .checklist li { display: flex; align-items: flex-start; gap: 8px; padding: 5px 0; font-size: 13px; color: var(--text); line-height: 1.5; border-bottom: 1px solid var(--border); }
-  .checklist li:last-child { border-bottom: none; }
-  .check-box { width: 16px; height: 16px; border: 1.5px solid var(--text3); border-radius: 3px; flex-shrink: 0; margin-top: 2px; }
+.verdict-area { padding: 14px 16px; border-bottom: 1px solid var(--border); }
+.verdict-level { font-size: 20px; font-weight: 900; line-height: 1.2; margin-bottom: 3px; }
+.verdict-level.red { color: var(--red); }
+.verdict-level.orange { color: var(--orange); }
+.verdict-level.green { color: var(--green); }
+.verdict-level.yellow { color: var(--yellow); }
+.verdict-level.blue { color: var(--blue); }
+.verdict-sub { font-size: 11px; color: var(--text2); line-height: 1.5; }
 
-  .role-list { list-style: none; }
-  .role-item { display: flex; align-items: flex-start; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-  .role-item:last-child { border-bottom: none; }
-  .role-name { color: var(--blue); font-weight: 500; min-width: 100px; flex-shrink: 0; font-size: 12px; }
-  .role-arrow { color: var(--text3); margin: 0 6px; flex-shrink: 0; }
-  .role-task { color: var(--text); flex: 1; line-height: 1.5; }
+.sec { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.sec:last-child { border-bottom: none; }
+.sec-title { font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; font-family: var(--mono); }
 
-  .source-line { font-family: var(--mono); font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.checks { list-style: none; }
+.checks li { display: flex; gap: 7px; align-items: flex-start; padding: 4px 0; font-size: 12px; border-bottom: 1px solid var(--border2); line-height: 1.5; }
+.checks li:last-child { border: none; }
+.box { width: 14px; height: 14px; border: 1.5px solid var(--text3); border-radius: 3px; flex-shrink: 0; margin-top: 1px; }
 
-  .error-card {
-    background: var(--red-dim); border: 1px solid rgba(255,59,59,0.3);
-    border-radius: 12px; padding: 14px 16px; font-size: 13px;
-    color: var(--red); display: none;
-  }
-  .error-card.show { display: block; }
+.roles { list-style: none; }
+.role-item { display: flex; align-items: flex-start; padding: 5px 0; border-bottom: 1px solid var(--border2); font-size: 12px; }
+.role-item:last-child { border: none; }
+.role-name { color: var(--blue); font-weight: 500; min-width: 90px; font-size: 11px; flex-shrink: 0; }
+.role-sep { color: var(--text3); margin: 0 5px; flex-shrink: 0; }
+.role-task { color: var(--text); flex: 1; line-height: 1.5; }
+.role-tel { font-family: var(--mono); font-size: 10px; color: var(--green); margin-left: 6px; text-decoration: none; white-space: nowrap; flex-shrink: 0; }
 
-  footer { text-align: center; padding: 16px; font-family: var(--mono); font-size: 10px; color: var(--text3); border-top: 1px solid var(--border); }
+.src { font-family: var(--mono); font-size: 10px; color: var(--text3); display: flex; gap: 6px; flex-wrap: wrap; }
+
+.error { background: var(--red-dim); border: 1px solid rgba(255,59,59,.3); border-radius: 10px; padding: 12px 14px; font-size: 12px; color: var(--red); display: none; }
+.error.show { display: block; }
+
+/* Mobile */
+@media (max-width: 640px) {
+  .layout { flex-direction: column; height: auto; }
+  .right { width: 100%; border-left: none; border-top: 1px solid var(--border); }
+  .left { padding: 12px; }
+}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="header-dot"></div>
-  <div class="header-title">法規智慧顧問</div>
-  <div class="header-sub">高雄長庚急診</div>
+  <div class="dot"></div>
+  <div class="h-title">法規智慧顧問</div>
+  <div class="h-sub">高雄長庚急診</div>
 </header>
 
-<main>
+<div class="layout">
 
-  <div class="chips-label">常見情境快速輸入</div>
-  <div class="chips">
-    <div class="chip" onclick="setQ('8位重傷、4位中傷、10位輕傷同時入院，現在是夜間')">夜間22人入院</div>
-    <div class="chip" onclick="setQ('發生化學物質外洩，有多名傷患吸入毒氣送來急診')">毒化災傷患</div>
-    <div class="chip" onclick="setQ('大樓火災，有燒燙傷及吸入性損傷傷患陸續送達')">火災燒燙傷</div>
-    <div class="chip" onclick="setQ('加護病房已滿床，急診有重傷患需要ICU')">ICU床位不足</div>
-    <div class="chip" onclick="setQ('ECMO機器只剩1台，有新的重症患者需要使用')">ECMO緊急調度</div>
-    <div class="chip" onclick="setQ('大量傷患狀況已經穩定，如何宣布解除？')">狀況解除程序</div>
-  </div>
-
-  <div class="input-area">
-    <textarea id="q-input"
-      placeholder="描述目前的實務情境，例如：現在是假日晚上，急診突然來了30位地震傷患，請問如何處理？"
-      oninput="updateChar()" maxlength="500"></textarea>
-    <div class="input-footer">
-      <span class="char-count" id="char-count">0 / 500</span>
-      <button class="submit-btn" id="submit-btn" onclick="query()">
-        查詢 <span>→</span>
-      </button>
+  <!-- 左側：查詢區 -->
+  <div class="left">
+    <div>
+      <div class="chips-label" style="margin-bottom:6px">常見情境</div>
+      <div class="chips">
+        <div class="chip" onclick="setQ('8位重傷、4位中傷、10位輕傷同時入院，現在是夜間')">夜間22人入院</div>
+        <div class="chip" onclick="setQ('發生化學物質外洩，多名傷患吸入毒氣送來急診')">毒化災傷患</div>
+        <div class="chip" onclick="setQ('大樓火災，燒燙傷及吸入性損傷傷患陸續送達')">火災燒燙傷</div>
+        <div class="chip" onclick="setQ('加護病房已滿床，急診有重傷患需要ICU')">ICU床位不足</div>
+        <div class="chip" onclick="setQ('ECMO機器只剩1台，有新的重症患者需要使用')">ECMO緊急調度</div>
+        <div class="chip" onclick="setQ('大量傷患狀況已經穩定，如何宣布解除？')">狀況解除程序</div>
+      </div>
     </div>
+
+    <div class="input-box">
+      <textarea id="q" placeholder="描述實務情境，例如：假日晚上急診來了30位地震傷患，請問如何處理？" oninput="updateChar()" maxlength="500"></textarea>
+      <div class="input-footer">
+        <span class="char" id="char">0 / 500</span>
+        <button class="send-btn" id="btn" onclick="query()">查詢 →</button>
+      </div>
+    </div>
+
+    <div class="loading" id="loading">
+      正在查詢法規知識庫並分析情境…
+      <div class="bar"><div class="bar-fill"></div></div>
+    </div>
+
+    <div class="result" id="result">
+      <div class="verdict-area" id="verdict"></div>
+      <div class="sec" id="actions"></div>
+      <div class="sec" id="roles-sec"></div>
+      <div class="sec" id="source"></div>
+    </div>
+
+    <div class="error" id="error"></div>
   </div>
 
-  <div class="thinking" id="thinking">
-    正在查詢法規知識庫並分析情境…
-    <div class="thinking-bar"><div class="thinking-fill"></div></div>
+  <!-- 右側：通訊錄面板 -->
+  <div class="right">
+    <div class="right-title">📞 緊急聯絡</div>
+    <div id="contacts"></div>
   </div>
 
-  <div class="result-card" id="result-card">
-    <div class="verdict" id="verdict-area"></div>
-    <div class="section" id="action-area"></div>
-    <div class="section" id="role-area"></div>
-    <div class="section" id="source-area"></div>
-  </div>
-
-  <div class="error-card" id="error-card"></div>
-
-</main>
-
-<footer>高雄長庚急診醫學部 · 法規智慧顧問系統</footer>
+</div>
 
 <script>
-// Worker 網址（固定，不需要改）
-const WORKER_URL = 'https://legal-advisor-api.cgmhsys.workers.dev';
+// ── Worker 網址 ──
+const WORKER = 'https://legal-advisor-api.cgmhsys.workers.dev';
 
-function updateChar() {
-  const len = document.getElementById('q-input').value.length;
-  document.getElementById('char-count').textContent = `${len} / 500`;
-}
+// ── 聯絡人資料 ──
+const CONTACTS = [
+  {
+    group: '指揮體系',
+    members: [
+      { name: '王植熙', role: '指揮官（院長）', gsm: '56202', night: '值班行政主管' },
+      { name: '龔嘉德', role: '指揮官代理（副院長）', gsm: '56626' },
+      { name: '吳冠漢', role: '醫護隊長（急診主任）', gsm: '56661' },
+      { name: '李肇瑞', role: '醫護隊長代理（急診副主任）', gsm: '56885' },
+      { name: '游玉良', role: '後勤隊長（管理處處長）', gsm: '68767' },
+      { name: '李冠霖', role: '後勤隊長代理（管理處高專）', gsm: '63001' },
+      { name: '黃珊', role: '計畫組組長（醫政組）', gsm: '53217' },
+      { name: '林怡君', role: '聯絡官（管理部專員）', gsm: '66050' },
+      { name: '黃翠蘋', role: '新聞官（醫政組專員）', gsm: '68773' },
+      { name: '陳芸雯', role: '安全官（安衛組組長）', gsm: '68762' },
+    ]
+  },
+  {
+    group: '醫療資源',
+    members: [
+      { name: '許俊傑', role: 'ECMO 聯絡窗口', gsm: '56328' },
+      { name: '李芳豔', role: '循環輔助器聯絡', gsm: '56290' },
+      { name: '賴俊仁', role: 'CVVH 透析聯絡', gsm: '68921' },
+      { name: '急診呼吸治療師', role: '呼吸器調度', gsm: '56147' },
+    ]
+  },
+  {
+    group: '對外查詢',
+    members: [
+      { name: '林錦玉', role: '醫政組（上班時段）', gsm: '2014（桌機）' },
+      { name: '行政主管', role: '平日17:30後/假日白天', gsm: '09750-56888' },
+      { name: '值班護理長', role: '其餘時段', gsm: '09750-56890' },
+      { name: '對外查詢專線', role: '24小時', gsm: '09788-35718' },
+    ]
+  }
+];
 
-function setQ(text) {
-  document.getElementById('q-input').value = text;
-  updateChar();
-  document.getElementById('q-input').focus();
-}
+// ── 法規知識庫（摘要版，供 Claude 參考）──
+const KB = `
+【大量傷患救護作業要點 L85016，2024-01-17】
 
-function setLoading(on) {
-  document.getElementById('thinking').className = 'thinking' + (on ? ' show' : '');
-  document.getElementById('submit-btn').disabled = on;
-  document.getElementById('result-card').className = 'result-card';
-  document.getElementById('error-card').className = 'error-card';
-}
+C級動員：傷病患16-50人 或 重大外傷6-10人
+廣播：三三三，C級動員
+日間：內外科第一組醫師；A、B、C區各釋出一位護理師
+夜間：全院廣播院內醫師＋簡訊召回院外第一組
 
-function showError(msg) {
-  const el = document.getElementById('error-card');
-  el.textContent = '⚠ ' + msg;
-  el.className = 'error-card show';
-}
+B級動員：傷病患51-100人 或 重大外傷11-20人
+廣播：三三三，B級動員
+日間：內外科第一、二組＋急診第一組；D、F、G區各一位護理師
+夜間：全院廣播＋簡訊召回第一、二組及急診第一組
 
-function renderResult(result) {
-  const v = result.verdict;
+A級動員：傷病患101人以上 或 重大外傷21人以上
+廣播：三三三，A級動員；由指揮官決定動員科別
 
-  document.getElementById('verdict-area').innerHTML = `
-    <div class="verdict-level ${v.color}">${v.emoji} ${v.level}</div>
-    <div class="verdict-sub">${v.sub}</div>
-  `;
+待命：廣播三三三待命；指揮中心成員、計畫組長、後勤隊長前往急診，其餘原地待命
+解除：廣播三三三解除
 
-  const actions = (result.actions || []).map(a =>
-    `<li><div class="check-box"></div><span>${a}</span></li>`
-  ).join('');
-  document.getElementById('action-area').innerHTML = `
-    <div class="section-title">立即執行</div>
-    <ul class="checklist">${actions}</ul>
-  `;
+報到地點：護理師→急診藥局前飲水機旁；後勤→大廳遺愛人間旁；其他→急診EOC
 
-  const roles = (result.roles || []).map(r =>
-    `<li class="role-item">
-      <span class="role-name">${r.name}</span>
-      <span class="role-arrow">→</span>
-      <span class="role-task">${r.task}</span>
-    </li>`
-  ).join('');
-  document.getElementById('role-area').innerHTML = `
-    <div class="section-title">各職稱任務</div>
-    <ul class="role-list">${roles}</ul>
-  `;
+燒燙傷：加召整形外科、外傷整形科
+毒化災：加召腎臟毒物科
+核災：加召核子醫學科、血液腫瘤科、放射腫瘤科
+兒科：加召兒科醫師
 
-  document.getElementById('source-area').innerHTML = `
-    <div class="source-line">
-      <span>📄</span>
-      <span>${result.source || '—'}</span>
-      <span>·</span>
-      <span>${result.date || '—'}</span>
+傷患通報：收治後30分鐘內初報；每30分鐘續報；完成後結報
+
+ECMO：共6台，聯絡許俊傑醫師GSM56328
+呼吸器：侵襲性138台、非侵襲性16台，聯絡急診RT GSM56147
+CVVH：共7台，聯絡賴俊仁GSM68921
+循環輔助器：共1台，聯絡李芳豔GSM56290
+
+ICU床位不足：白天各專科ICU窗口與急診共同調度；夜間啟動單一窗口
+無法解決依序：ICU單一窗口→專科科主任→部主任→加護病房委員會主席→副院長→院長
+
+狀況解除後對外查詢專線：09788-35718
+`;
+
+// ── 渲染通訊錄 ──
+function renderContacts() {
+  const el = document.getElementById('contacts');
+  el.innerHTML = CONTACTS.map(g => `
+    <div class="contact-group">
+      <div class="group-name">${g.group}</div>
+      ${g.members.map(m => `
+        <div class="contact-item">
+          <div class="contact-info">
+            <div class="contact-name">${m.name}</div>
+            <div class="contact-role">${m.role}</div>
+          </div>
+          <a class="call-btn" href="tel:${m.gsm}">${m.gsm}</a>
+        </div>
+      `).join('')}
     </div>
-  `;
-
-  document.getElementById('result-card').className = 'result-card show';
+  `).join('');
 }
 
-async function query() {
-  const situation = document.getElementById('q-input').value.trim();
-  if (!situation) return;
+// ── UI ──
+function updateChar() {
+  document.getElementById('char').textContent = document.getElementById('q').value.length + ' / 500';
+}
+function setQ(t) {
+  document.getElementById('q').value = t;
+  updateChar();
+}
+function setLoading(on) {
+  document.getElementById('loading').className = 'loading' + (on ? ' show' : '');
+  document.getElementById('btn').disabled = on;
+  document.getElementById('result').className = 'result';
+  document.getElementById('error').className = 'error';
+}
+function showError(msg) {
+  const el = document.getElementById('error');
+  el.textContent = '⚠ ' + msg;
+  el.className = 'error show';
+}
 
+function render(r) {
+  const v = r.verdict || {};
+  document.getElementById('verdict').innerHTML = `
+    <div class="verdict-level ${v.color || 'blue'}">${v.emoji || ''} ${v.level || ''}</div>
+    <div class="verdict-sub">${v.sub || ''}</div>
+  `;
+
+  document.getElementById('actions').innerHTML = `
+    <div class="sec-title">立即執行</div>
+    <ul class="checks">${(r.actions || []).map(a => `<li><div class="box"></div><span>${a}</span></li>`).join('')}</ul>
+  `;
+
+  // 比對通訊錄電話
+  const allContacts = CONTACTS.flatMap(g => g.members);
+  document.getElementById('roles-sec').innerHTML = `
+    <div class="sec-title">各職稱任務</div>
+    <ul class="roles">${(r.roles || []).map(role => {
+      const match = allContacts.find(c => c.role.includes(role.name) || role.name.includes(c.name));
+      const tel = match ? `<a class="role-tel" href="tel:${match.gsm}">📞 ${match.gsm}</a>` : '';
+      return `<li class="role-item">
+        <span class="role-name">${role.name}</span>
+        <span class="role-sep">→</span>
+        <span class="role-task">${role.task}</span>
+        ${tel}
+      </li>`;
+    }).join('')}</ul>
+  `;
+
+  document.getElementById('source').innerHTML = `
+    <div class="src"><span>📄</span><span>${r.source || '—'}</span><span>·</span><span>${r.date || '—'}</span></div>
+  `;
+
+  document.getElementById('result').className = 'result show';
+}
+
+// ── 查詢 ──
+async function query() {
+  const situation = document.getElementById('q').value.trim();
+  if (!situation) return;
   setLoading(true);
 
   try {
-    const resp = await fetch(`${WORKER_URL}/query`, {
+    const resp = await fetch(`${WORKER}/query`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ situation })
+      body: JSON.stringify({ situation, kb: KB })
     });
 
     const data = await resp.json();
-
     if (data.error) throw new Error(data.error);
-    renderResult(data);
-
-  } catch(e) {
+    render(data);
+  } catch (e) {
     showError(e.message);
   } finally {
     setLoading(false);
   }
 }
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && e.ctrlKey) query();
-});
+document.addEventListener('keydown', e => { if (e.ctrlKey && e.key === 'Enter') query(); });
+
+// 初始化
+renderContacts();
 </script>
 </body>
 </html>
