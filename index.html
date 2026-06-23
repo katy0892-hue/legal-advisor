@@ -850,7 +850,7 @@ function buildSystemPrompt() {
 JSON 結構如下（所有欄位使用繁體中文）：
 {
   "level": "本次研判的大傷啟動級數，僅填 C級／B級／A級 其中之一；若未達啟動標準或無法判斷，填「—」",
-  "summary": "2至4句話說明適用情境、動員等級、關鍵判斷。純文字，不含 markdown。",
+  "summary": "精簡摘要，2至4句話：適用情境、動員等級、關鍵判斷。詳細流程放 steps、背景說明放 info，切勿把全部內容塞進 summary。純文字，不含 markdown。",
   "steps": [
     {
       "title": "步驟主旨（一句話）",
@@ -869,6 +869,7 @@ JSON 結構如下（所有欄位使用繁體中文）：
 - contacts 若無則填空陣列 []
 - subs 若無則填空陣列 []
 - summary 必填，不可為空
+- summary 控制在 4 句以內；詳細流程一律放 steps、背景說明放 info，避免 summary 過長導致回應被截斷
 - level 必填：依傷病患人數或重大外傷人數研判（C級＝16-50人或重大外傷6-10人；B級＝51-100人或11-20人；A級＝101人以上或21人以上）；情境未提供人數或無法判斷時填「—」
 - 行動步驟中凡涉及聯繫、通知或回報某角色，且資料庫「聯繫」欄有該角色的現任姓名與 GSM，請在該步驟文字中直接帶出，格式如「聯繫醫護隊長（吳冠漢 GSM:56661）」，讓現場能立即撥號
 - 只根據資料庫內容回答，不自行發明資訊
@@ -895,17 +896,32 @@ function parseAnswer(text) {
   // 1. Strip markdown code fences if present
   let clean = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
 
-  // 2. If JSON is truncated (API hit max_tokens), attempt to auto-close it
+  // 2. If JSON is truncated (API hit max_tokens), attempt to repair it
   if (!clean.endsWith('}')) {
-    // Close any open arrays/objects greedily
-    let open = 0;
-    for (const ch of clean) { if (ch==='{' || ch==='[') open++; else if (ch==='}' || ch===']') open--; }
-    // Remove trailing incomplete key/value (after last complete comma or opening brace)
-    clean = clean.replace(/,\s*"[^"]*"\s*:\s*[^,}\]]*$/, '');
-    clean = clean.replace(/,\s*"[^"]*"\s*$/, '');
-    // Close remaining open structures
+    // 2a. If the text ended inside a string, close that string first
+    let inStr = false, esc = false;
+    for (const ch of clean) {
+      if (esc) { esc = false; continue; }
+      if (ch === '\\') { esc = true; continue; }
+      if (ch === '"') inStr = !inStr;
+    }
+    if (inStr) clean += '"';
+    // 2b. Drop a dangling trailing comma or an incomplete "key":
+    clean = clean.replace(/[\s,]+$/, '');
+    clean = clean.replace(/:\s*$/, '');
+    // 2c. Balance unclosed { and [ (ignoring brackets inside strings)
     const stack = [];
-    for (const ch of clean) { if (ch==='{') stack.push('}'); else if (ch==='[') stack.push(']'); else if (ch==='}' || ch===']') stack.pop(); }
+    inStr = false; esc = false;
+    for (const ch of clean) {
+      if (esc) { esc = false; continue; }
+      if (ch === '\\') { esc = true; continue; }
+      if (ch === '"') { inStr = !inStr; continue; }
+      if (inStr) continue;
+      if (ch === '{') stack.push('}');
+      else if (ch === '[') stack.push(']');
+      else if (ch === '}' || ch === ']') stack.pop();
+    }
+    clean = clean.replace(/,\s*$/, '');
     clean = clean + stack.reverse().join('');
   }
 
@@ -971,7 +987,7 @@ async function askQuestion() {
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-5',
-        max_tokens: 2000,
+        max_tokens: 4096,
         system: buildSystemPrompt(),
         messages: [{ role: 'user', content: q }]
       })
