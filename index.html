@@ -794,6 +794,7 @@ async function loadAirtableData() {
       source: r.fields['來源條文'] || '',
       steps: r.fields['行動步驟'] || '',
       role: r.fields['負責角色'] || '',
+      contacts: r.fields['現任聯繫（帶出）'] || [],   // ← 新增：Lookup 帶出的現任姓名＋GSM（含主／代理）
     })).filter(r => r.key);
 
     document.getElementById('statusDot').className = 'nav-status-dot connected';
@@ -834,6 +835,7 @@ JSON 結構如下（所有欄位使用繁體中文）：
 - subs 若無則填空陣列 []
 - summary 必填，不可為空
 - 只根據資料庫內容回答，不自行發明資訊
+- 聯繫人資料若標有「主」或「代理」，請於 contacts 的 note 欄位標明，並讓「主」排在「代理」前面
 - 回傳純 JSON，第一個字元必須是 {，最後一個字元必須是 }
 
 === 法規問答資料庫 ===\n\n`;
@@ -843,7 +845,9 @@ JSON 結構如下（所有欄位使用繁體中文）：
     if (qa.questions) prompt += `問：${qa.questions}\n`;
     if (qa.answer) prompt += `答：${qa.answer}\n`;
     if (qa.steps) prompt += `步驟：${qa.steps}\n`;
-    if (qa.role) prompt += `聯繫：${qa.role}\n`;
+    // 聯繫人優先用 Lookup 帶出的現任資料（單一來源、含主／代理）；沒連結的記錄退回負責角色文字
+    const contactInfo = (qa.contacts && qa.contacts.length) ? qa.contacts.join('；') : qa.role;
+    if (contactInfo) prompt += `聯繫：${contactInfo}\n`;
     if (qa.source) prompt += `來源：${qa.source}\n`;
     prompt += '\n';
   });
@@ -1033,4 +1037,3 @@ if (localStorage.getItem('cgmh_anthropic_key') && localStorage.getItem('cgmh_air
 </script>
 </body>
 </html>
-
