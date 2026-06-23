@@ -638,6 +638,42 @@
   .level-banner.lv-b { background: linear-gradient(135deg, #c0392b, #e0654f); }
   .level-banner.lv-a { background: linear-gradient(135deg, #6f1a12, #c0392b); }
 
+  /* Tabs */
+  .tabbar { display:flex; gap:6px; margin-bottom:1.25rem; border-bottom:1px solid var(--border); }
+  .tab {
+    font-family:inherit; font-size:13px; font-weight:500; color:var(--text-secondary);
+    background:transparent; border:none; padding:10px 16px; cursor:pointer;
+    border-bottom:2px solid transparent; margin-bottom:-1px; transition:all .15s;
+  }
+  .tab:hover { color:var(--accent); }
+  .tab.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
+
+  /* Dispatch panel */
+  .dispatch-hint { font-size:12px; color:var(--text-muted); line-height:1.6; margin-bottom:14px; }
+  .level-picker { display:flex; gap:10px; }
+  .lv-btn {
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+    font-family:inherit; font-size:18px; font-weight:700; color:#fff; cursor:pointer;
+    border:none; border-radius:var(--radius); padding:14px 8px; transition:transform .1s, box-shadow .15s;
+    box-shadow:var(--shadow);
+  }
+  .lv-btn span { font-size:10px; font-weight:400; opacity:.85; letter-spacing:.02em; }
+  .lv-btn:hover { transform:translateY(-1px); box-shadow:var(--shadow-md); }
+  .lv-btn.active { outline:3px solid rgba(15,25,35,.28); outline-offset:1px; }
+  .lv-c-btn { background:linear-gradient(135deg,#b45309,#d97706); }
+  .lv-b-btn { background:linear-gradient(135deg,#c0392b,#e0654f); }
+  .lv-a-btn { background:linear-gradient(135deg,#6f1a12,#c0392b); }
+  .drymode { display:flex; align-items:center; gap:7px; font-size:12px; color:var(--text-secondary); margin-top:14px; cursor:pointer; }
+  .btn-danger {
+    width:100%; padding:12px; margin-top:1rem; background:var(--red); color:#fff; border:none;
+    border-radius:var(--radius-sm); font-family:inherit; font-size:14px; font-weight:600; cursor:pointer;
+    letter-spacing:.03em; transition:background .15s;
+  }
+  .btn-danger:hover { background:#a93226; }
+  .send-result { margin-top:1rem; padding:12px 16px; border-radius:var(--radius); font-size:13px; line-height:1.6; }
+  .send-result.ok { background:var(--green-light); border:1px solid #b6e2c9; color:var(--green); }
+  .send-result.warn { background:var(--amber-light); border:1px solid #f4dca0; color:var(--amber); }
+
   /* Utility */
   #mainPanel { display: none; }
 </style>
@@ -688,6 +724,13 @@
 
 <!-- Main Panel -->
 <div class="page" id="mainPanel">
+
+  <div class="tabbar">
+    <button class="tab active" id="tabBtnQa" onclick="switchTab('qa')">🔎 法規問答</button>
+    <button class="tab" id="tabBtnDispatch" onclick="switchTab('dispatch')">🚨 召集啟動</button>
+  </div>
+
+  <div id="tab-qa" class="tab-panel">
 
   <!-- Question Input -->
   <div class="question-card">
@@ -778,14 +821,44 @@
 
     </div>
   </div>
+  </div><!-- /tab-qa -->
+
+  <!-- ===== 召集啟動分頁 ===== -->
+  <div id="tab-dispatch" class="tab-panel" style="display:none;">
+    <div class="question-card">
+      <div class="field-label" style="margin-bottom:8px;">啟動級數</div>
+      <div class="dispatch-hint">選擇要啟動的動員等級，系統會列出該級應召集的人員供您核對；確認後才發送。預設為「演習模式」，只預覽不真送。</div>
+      <div class="level-picker">
+        <button class="lv-btn lv-c-btn" onclick="selectLevel('C級')">C級<span>16-50人 / 重大外傷6-10</span></button>
+        <button class="lv-btn lv-b-btn" onclick="selectLevel('B級')">B級<span>51-100人 / 11-20</span></button>
+        <button class="lv-btn lv-a-btn" onclick="selectLevel('A級')">A級<span>101人以上 / 21以上</span></button>
+      </div>
+      <label class="drymode"><input type="checkbox" id="dryRun" checked> 演習模式（只預覽、不實際發送）</label>
+    </div>
+
+    <div id="previewArea" style="display:none;">
+      <div class="divider">召集名單預覽</div>
+      <div id="previewBanner" class="level-banner"></div>
+      <div class="contact-card">
+        <div class="contact-card-header">👥 將通知人員（<span id="previewCount">0</span> 人）</div>
+        <div id="previewList"></div>
+      </div>
+      <button class="btn-danger" id="confirmSendBtn" onclick="confirmSend()">確認發送 →</button>
+      <div id="sendResult" class="send-result" style="display:none;"></div>
+    </div>
+  </div>
+
 </div>
 
 <script>
 const BASE_ID = 'app4I4h25azllFSve';
 const TABLE_ID = 'tblaKjjZVMCnKdsNT';
 const PEOPLE_TABLE_ID = 'tblaCe6Qpa8xKbWPq';
+const DISPATCH_ENDPOINT = ''; // 資訊室後端發送服務網址；留空時僅能「演習模式」預覽，無法實際發送
 let qaData = [];
 let roster = [];
+let selectedLevel = '';
+let currentRecipients = [];
 
 function saveKeys() {
   const ak = document.getElementById('anthropicKeyInput').value.trim();
@@ -845,9 +918,13 @@ async function loadAirtableData() {
       pOffset = pdata.offset;
     } while (pOffset);
     roster = pRecords.map(r => ({
-      card:  r.fields['聯絡卡']   || '',
-      role:  r.fields['應變角色'] || '',
-      order: r.fields['召集順位'] || ''
+      card:   r.fields['聯絡卡']   || '',
+      role:   r.fields['應變角色'] || '',
+      order:  r.fields['召集順位'] || '',
+      levels: r.fields['召集等級'] || [],
+      name:   r.fields['現任姓名'] || '',
+      gsm:    r.fields['GSM']      || '',
+      title:  r.fields['職稱']     || ''
     })).filter(r => r.card);
 
     document.getElementById('statusDot').className = 'nav-status-dot connected';
@@ -1121,6 +1198,88 @@ async function askQuestion() {
 document.getElementById('questionInput').addEventListener('keydown', e => {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askQuestion(); }
 });
+
+// ===== 分頁切換 =====
+function switchTab(tab) {
+  document.getElementById('tab-qa').style.display = (tab === 'qa') ? 'block' : 'none';
+  document.getElementById('tab-dispatch').style.display = (tab === 'dispatch') ? 'block' : 'none';
+  document.getElementById('tabBtnQa').classList.toggle('active', tab === 'qa');
+  document.getElementById('tabBtnDispatch').classList.toggle('active', tab === 'dispatch');
+}
+
+// ===== 召集啟動：選級數 → 預覽名單 =====
+function selectLevel(level) {
+  if (!roster.length) { alert('人員名冊尚未載入，請稍候或點「重新載入」'); return; }
+  selectedLevel = level;
+  currentRecipients = roster.filter(p => Array.isArray(p.levels) && p.levels.includes(level));
+  // 主排在代理前面
+  currentRecipients.sort((a, b) => (a.order === '主' ? 0 : 1) - (b.order === '主' ? 0 : 1));
+
+  document.querySelectorAll('.lv-btn').forEach(b => b.classList.remove('active'));
+  const map = { 'C級': 'lv-c-btn', 'B級': 'lv-b-btn', 'A級': 'lv-a-btn' };
+  const btn = document.querySelector('.' + map[level]);
+  if (btn) btn.classList.add('active');
+
+  document.getElementById('previewArea').style.display = 'block';
+  const banner = document.getElementById('previewBanner');
+  banner.className = 'level-banner ' + (level.includes('A') ? 'lv-a' : level.includes('B') ? 'lv-b' : 'lv-c');
+  banner.innerHTML = `<span class="level-banner-label">啟動級數</span><span class="level-banner-value">${level}</span>`;
+
+  document.getElementById('previewCount').textContent = currentRecipients.length;
+  document.getElementById('previewList').innerHTML = currentRecipients.length
+    ? currentRecipients.map(p => `
+        <div class="contact-item">
+          <div class="contact-left">
+            <div class="contact-avatar">${(p.name || p.title || '？').charAt(0)}</div>
+            <div>
+              <div class="contact-name">${p.name || '（輪值）'}</div>
+              <div class="contact-title">${p.role || p.title}${p.order ? ' · ' + p.order : ''}</div>
+            </div>
+          </div>
+          <span class="contact-gsm">GSM ${p.gsm || '—'}</span>
+        </div>`).join('')
+    : '<div style="padding:14px 16px;color:var(--text-muted);font-size:13px;">此級別查無對應人員，請確認「人員」表的「召集等級」欄已標記。</div>';
+
+  document.getElementById('sendResult').style.display = 'none';
+}
+
+// ===== 召集啟動：二次確認後發送 =====
+function confirmSend() {
+  if (!selectedLevel || !currentRecipients.length) return;
+  const dry = document.getElementById('dryRun').checked;
+  const result = document.getElementById('sendResult');
+  result.style.display = 'block';
+
+  if (dry) {
+    result.className = 'send-result ok';
+    result.innerHTML = `✅ 演習模式：已模擬「${selectedLevel}」召集，將通知 ${currentRecipients.length} 人（未實際送出）。<br>正式啟動請取消勾選「演習模式」，並確認已接上後端發送服務。`;
+    return;
+  }
+  if (!DISPATCH_ENDPOINT) {
+    result.className = 'send-result warn';
+    result.innerHTML = `⚠️ 尚未接後端發送服務，無法實際送出。請先在程式頂端的 <code>DISPATCH_ENDPOINT</code> 填入資訊室提供的發送網址，或勾選「演習模式」做預覽。`;
+    return;
+  }
+  result.className = 'send-result ok';
+  result.innerHTML = '發送中…';
+  fetch(DISPATCH_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      level: selectedLevel,
+      recipients: currentRecipients.map(p => ({ role: p.role, order: p.order, name: p.name, gsm: p.gsm }))
+    })
+  })
+  .then(r => { if (!r.ok) throw new Error('後端回應 ' + r.status); return r.json(); })
+  .then(() => {
+    result.className = 'send-result ok';
+    result.innerHTML = `✅ 已送出「${selectedLevel}」召集（${currentRecipients.length} 人）。送達回執請見後端紀錄。`;
+  })
+  .catch(e => {
+    result.className = 'send-result warn';
+    result.innerHTML = '❌ 發送失敗：' + e.message;
+  });
+}
 
 // Auto-init
 if (localStorage.getItem('cgmh_anthropic_key') && localStorage.getItem('cgmh_airtable_key')) {
