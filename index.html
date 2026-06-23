@@ -610,6 +610,34 @@
     line-height: 1.5;
   }
 
+  /* Activation level banner */
+  .level-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: var(--radius-lg);
+    padding: 14px 20px;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-md);
+    background: var(--accent);
+  }
+  .level-banner-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.75);
+  }
+  .level-banner-value {
+    font-size: 21px;
+    font-weight: 700;
+    color: #fff;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+  .level-banner.lv-c { background: linear-gradient(135deg, #b45309, #d97706); }
+  .level-banner.lv-b { background: linear-gradient(135deg, #c0392b, #e0654f); }
+  .level-banner.lv-a { background: linear-gradient(135deg, #6f1a12, #c0392b); }
+
   /* Utility */
   #mainPanel { display: none; }
 </style>
@@ -703,6 +731,12 @@
 
     <!-- Answer Content -->
     <div id="answerContent" style="display:none;">
+
+      <!-- Activation level banner -->
+      <div id="levelBanner" class="level-banner" style="display:none;">
+        <span class="level-banner-label">啟動級數</span>
+        <span class="level-banner-value" id="levelValue"></span>
+      </div>
 
       <!-- Main answer -->
       <div id="answerHeaderCard" class="answer-header-card" style="display:none;">
@@ -815,6 +849,7 @@ function buildSystemPrompt() {
 
 JSON 結構如下（所有欄位使用繁體中文）：
 {
+  "level": "本次研判的大傷啟動級數，僅填 C級／B級／A級 其中之一；若未達啟動標準或無法判斷，填「—」",
   "summary": "2至4句話說明適用情境、動員等級、關鍵判斷。純文字，不含 markdown。",
   "steps": [
     {
@@ -834,6 +869,8 @@ JSON 結構如下（所有欄位使用繁體中文）：
 - contacts 若無則填空陣列 []
 - subs 若無則填空陣列 []
 - summary 必填，不可為空
+- level 必填：依傷病患人數或重大外傷人數研判（C級＝16-50人或重大外傷6-10人；B級＝51-100人或11-20人；A級＝101人以上或21人以上）；情境未提供人數或無法判斷時填「—」
+- 行動步驟中凡涉及聯繫、通知或回報某角色，且資料庫「聯繫」欄有該角色的現任姓名與 GSM，請在該步驟文字中直接帶出，格式如「聯繫醫護隊長（吳冠漢 GSM:56661）」，讓現場能立即撥號
 - 只根據資料庫內容回答，不自行發明資訊
 - 聯繫人資料若標有「主」或「代理」，請於 contacts 的 note 欄位標明，並讓「主」排在「代理」前面
 - 回傳純 JSON，第一個字元必須是 {，最後一個字元必須是 }
@@ -875,6 +912,7 @@ function parseAnswer(text) {
   try {
     const d = JSON.parse(clean);
     return {
+      level:    typeof d.level    === 'string' ? d.level    : '',
       summary:  typeof d.summary  === 'string' ? d.summary  : '',
       steps:    Array.isArray(d.steps)    ? d.steps    : [],
       info:     typeof d.info     === 'string' ? d.info     : '',
@@ -888,7 +926,8 @@ function parseAnswer(text) {
       steps: [],
       info: '⚠️ 回應格式解析失敗，請再試一次。\n\n' + clean.slice(0, 300),
       contacts: [],
-      source: '大量傷患救護作業要點'
+      source: '大量傷患救護作業要點',
+      level: ''
     };
   }
 }
@@ -947,6 +986,17 @@ async function askQuestion() {
     // Render
     document.getElementById('loadingIndicator').style.display = 'none';
     document.getElementById('answerContent').style.display = 'block';
+
+    // Activation level banner
+    const lv = (parsed.level || '').trim();
+    const banner = document.getElementById('levelBanner');
+    if (lv && lv !== '—') {
+      banner.style.display = 'flex';
+      banner.className = 'level-banner ' + (lv.includes('A') ? 'lv-a' : lv.includes('B') ? 'lv-b' : lv.includes('C') ? 'lv-c' : '');
+      document.getElementById('levelValue').textContent = lv;
+    } else {
+      banner.style.display = 'none';
+    }
 
     // Summary card — now a plain string
     if (parsed.summary) {
@@ -1013,6 +1063,7 @@ async function askQuestion() {
     clearInterval(timer);
     document.getElementById('loadingIndicator').style.display = 'none';
     document.getElementById('answerContent').style.display = 'block';
+    document.getElementById('levelBanner').style.display = 'none';
     document.getElementById('answerHeaderCard').style.display = 'none';
     document.getElementById('stepsCard').style.display = 'none';
     document.getElementById('infoCard').style.display = 'none';
