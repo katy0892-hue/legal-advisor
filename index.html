@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>法規問答系統 — 高雄長庚</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #f0f2f5;
@@ -45,7 +45,7 @@
     align-items: center;
   }
 
-  /* ── Top Nav ── */
+  /* Top Nav */
   .topnav {
     width: 100%;
     background: var(--accent);
@@ -59,11 +59,7 @@
     z-index: 100;
     box-shadow: 0 2px 8px rgba(0,0,0,0.18);
   }
-  .topnav-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  .topnav-brand { display: flex; align-items: center; gap: 10px; }
   .topnav-logo {
     width: 28px; height: 28px;
     background: rgba(255,255,255,0.15);
@@ -71,591 +67,262 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 14px;
   }
-  .topnav-title {
-    font-size: 13px;
-    font-weight: 500;
-    color: #fff;
-    letter-spacing: 0.02em;
-  }
-  .topnav-sub {
-    font-size: 11px;
-    color: rgba(255,255,255,0.5);
-    letter-spacing: 0.03em;
-  }
-  .topnav-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  .topnav-title { font-size: 13px; font-weight: 500; color: #fff; letter-spacing: 0.02em; }
+  .topnav-sub { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 0.03em; }
+  .topnav-actions { display: flex; align-items: center; gap: 8px; }
   .nav-status {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: rgba(255,255,255,0.6);
-    background: rgba(255,255,255,0.08);
-    padding: 4px 10px;
-    border-radius: 20px;
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.08); padding: 4px 10px; border-radius: 20px;
   }
   .nav-status-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.3);
-    transition: background 0.3s;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(255,255,255,0.3); transition: background 0.3s;
   }
   .nav-status-dot.connected { background: #4ade80; box-shadow: 0 0 6px rgba(74,222,128,0.5); }
   .nav-btn {
-    font-size: 12px;
-    color: rgba(255,255,255,0.6);
-    background: transparent;
-    border: 0.5px solid rgba(255,255,255,0.2);
-    border-radius: 6px;
-    padding: 4px 10px;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: inherit;
+    font-size: 12px; color: rgba(255,255,255,0.6);
+    background: transparent; border: 0.5px solid rgba(255,255,255,0.2);
+    border-radius: 6px; padding: 4px 10px; cursor: pointer;
+    transition: all 0.15s; font-family: inherit;
   }
   .nav-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
-  /* ── Layout ── */
-  .page {
-    width: 100%;
-    max-width: 760px;
-    padding: 2rem 1rem 4rem;
-  }
+  /* Layout */
+  .page { width: 100%; max-width: 760px; padding: 1.5rem 1rem 4rem; }
 
-  /* ── Setup Panel ── */
-  .setup-wrap {
-    max-width: 480px;
-    margin: 3rem auto;
-  }
-  .setup-header {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
+  /* Setup Panel */
+  .setup-wrap { max-width: 480px; margin: 3rem auto; }
+  .setup-header { text-align: center; margin-bottom: 2rem; }
   .setup-icon {
-    width: 56px; height: 56px;
-    background: var(--accent);
-    border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px;
-    margin: 0 auto 1rem;
-    box-shadow: var(--shadow-md);
+    width: 56px; height: 56px; background: var(--accent); border-radius: 14px;
+    display: flex; align-items: center; justify-content: center; font-size: 22px;
+    margin: 0 auto 1rem; box-shadow: var(--shadow-md);
   }
-  .setup-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 6px;
-  }
-  .setup-subtitle {
-    font-size: 13px;
-    color: var(--text-muted);
-    line-height: 1.6;
-  }
+  .setup-title { font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+  .setup-subtitle { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
   .card {
-    background: var(--surface);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow);
-    padding: 1.5rem;
-    margin-bottom: 1rem;
+    background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border);
+    box-shadow: var(--shadow); padding: 1.5rem; margin-bottom: 1rem;
   }
   .field-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 6px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 6px;
   }
-  .field-hint {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 5px;
-    line-height: 1.5;
-  }
+  .field-hint { font-size: 11px; color: var(--text-muted); margin-top: 5px; line-height: 1.5; }
   input[type="password"], input[type="text"], textarea {
-    width: 100%;
-    padding: 9px 12px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-    font-family: 'DM Mono', monospace;
-    background: var(--surface-2);
-    color: var(--text-primary);
-    outline: none;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+    font-size: 13px; font-family: 'DM Mono', monospace; background: var(--surface-2);
+    color: var(--text-primary); outline: none; transition: border-color 0.15s, box-shadow 0.15s;
   }
   input:focus, textarea:focus {
-    border-color: var(--accent-mid);
-    box-shadow: 0 0 0 3px rgba(44,82,130,0.1);
-    background: var(--surface);
+    border-color: var(--accent-mid); box-shadow: 0 0 0 3px rgba(44,82,130,0.1); background: var(--surface);
   }
   textarea {
-    font-family: 'Noto Sans TC', sans-serif;
-    font-size: 14px;
-    min-height: 90px;
-    resize: none;
-    line-height: 1.6;
+    font-family: 'Noto Sans TC', sans-serif; font-size: 14px; min-height: 90px; resize: none; line-height: 1.6;
   }
   .btn-primary {
-    width: 100%;
-    padding: 11px 20px;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    font-family: inherit;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s;
-    letter-spacing: 0.02em;
-    margin-top: 4px;
+    width: 100%; padding: 11px 20px; background: var(--accent); color: #fff; border: none;
+    border-radius: var(--radius-sm); font-size: 14px; font-family: inherit; font-weight: 500;
+    cursor: pointer; transition: all 0.15s; letter-spacing: 0.02em; margin-top: 4px;
   }
   .btn-primary:hover { background: var(--accent-mid); }
   .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  /* ── Question Area ── */
+  /* Question Area */
   .question-card {
-    background: var(--surface);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow);
-    padding: 1.25rem;
-    margin-bottom: 1.25rem;
+    background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border);
+    box-shadow: var(--shadow); padding: 1.25rem; margin-bottom: 1.25rem;
   }
-  .question-card textarea {
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-sm);
-    background: var(--surface-2);
-  }
-  .question-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 10px;
-    gap: 10px;
-  }
-  .chips {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    flex: 1;
-  }
+  .question-card textarea { border: 1px solid var(--border-light); border-radius: var(--radius-sm); background: var(--surface-2); }
+  .question-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; gap: 10px; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
   .chip {
-    font-size: 11px;
-    color: var(--text-secondary);
-    background: var(--surface-3);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 4px 10px;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: inherit;
-    white-space: nowrap;
+    font-size: 11px; color: var(--text-secondary); background: var(--surface-3);
+    border: 1px solid var(--border); border-radius: 20px; padding: 4px 10px;
+    cursor: pointer; transition: all 0.15s; font-family: inherit; white-space: nowrap;
   }
   .chip:hover { background: var(--accent-light); border-color: var(--accent-mid); color: var(--accent); }
   .send-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-sm);
-    padding: 8px 16px;
-    font-size: 13px;
-    font-family: inherit;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
-    flex-shrink: 0;
+    display: flex; align-items: center; gap: 6px; background: var(--accent); color: #fff;
+    border: none; border-radius: var(--radius-sm); padding: 8px 16px; font-size: 13px;
+    font-family: inherit; font-weight: 500; cursor: pointer; transition: all 0.15s;
+    white-space: nowrap; flex-shrink: 0;
   }
   .send-btn:hover { background: var(--accent-mid); }
   .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
   .send-icon { font-size: 12px; }
 
-  /* ── Divider ── */
+  /* Divider */
   .divider {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 1.5rem 0;
-    color: var(--text-muted);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    display: flex; align-items: center; gap: 10px; margin: 1.25rem 0;
+    color: var(--text-muted); font-size: 11px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase;
   }
-  .divider::before, .divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  /* ── Answer Section ── */
-  .q-echo {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 1.25rem;
-  }
+  /* Question echo */
+  .q-echo { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 1rem; }
   .q-echo-icon {
-    width: 28px; height: 28px;
-    background: var(--accent-light);
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px;
-    flex-shrink: 0;
-    margin-top: 1px;
+    width: 28px; height: 28px; background: var(--accent-light); border-radius: 6px;
+    display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; margin-top: 1px;
   }
   .q-echo-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 3px;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 3px;
   }
-  .q-echo-text {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-primary);
-    line-height: 1.5;
-  }
+  .q-echo-text { font-size: 14px; font-weight: 500; color: var(--text-primary); line-height: 1.5; }
 
   /* Loading */
   .loading-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-    box-shadow: var(--shadow);
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 2rem; display: flex; flex-direction: column; align-items: center; gap: 14px; box-shadow: var(--shadow);
   }
-  .loading-bar {
-    width: 100%;
-    max-width: 280px;
-    height: 3px;
-    background: var(--border);
-    border-radius: 3px;
-    overflow: hidden;
-  }
+  .loading-bar { width: 100%; max-width: 280px; height: 3px; background: var(--border); border-radius: 3px; overflow: hidden; }
   .loading-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent-mid));
-    border-radius: 3px;
-    animation: loadingBar 1.6s ease-in-out infinite;
+    height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-mid));
+    border-radius: 3px; animation: loadingBar 1.6s ease-in-out infinite;
   }
-  @keyframes loadingBar {
-    0% { width: 0%; margin-left: 0; }
-    50% { width: 70%; }
-    100% { width: 0%; margin-left: 100%; }
-  }
-  .loading-msg {
-    font-size: 13px;
-    color: var(--text-muted);
-    letter-spacing: 0.02em;
-  }
+  @keyframes loadingBar { 0% { width: 0%; margin-left: 0; } 50% { width: 70%; } 100% { width: 0%; margin-left: 100%; } }
+  .loading-msg { font-size: 13px; color: var(--text-muted); letter-spacing: 0.02em; }
 
-  /* Answer cards */
+  /* Summary card */
   .answer-header-card {
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent-mid) 100%);
-    border-radius: var(--radius-lg);
-    padding: 1.25rem 1.5rem;
-    margin-bottom: 1rem;
-    box-shadow: var(--shadow-md);
+    border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 0.85rem; box-shadow: var(--shadow-md);
   }
   .answer-header-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.6);
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: rgba(255,255,255,0.6); margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
   }
-  .answer-header-label::before {
-    content: '';
-    display: inline-block;
-    width: 16px; height: 1px;
-    background: rgba(255,255,255,0.4);
-  }
-  .answer-header-text {
-    font-size: 15px;
-    color: #fff;
-    line-height: 1.8;
-    font-weight: 400;
-  }
-  .answer-header-text strong {
-    font-weight: 600;
-    background: rgba(255,255,255,0.15);
-    padding: 1px 5px;
-    border-radius: 3px;
-  }
+  .answer-header-label::before { content: ''; display: inline-block; width: 16px; height: 1px; background: rgba(255,255,255,0.4); }
+  .answer-header-text { font-size: 15px; color: #fff; line-height: 1.7; font-weight: 400; }
+  .answer-header-text strong { font-weight: 600; background: rgba(255,255,255,0.15); padding: 1px 5px; border-radius: 3px; }
 
+  /* Steps */
   .steps-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    margin-bottom: 1rem;
-    box-shadow: var(--shadow);
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    overflow: hidden; margin-bottom: 0.85rem; box-shadow: var(--shadow);
   }
   .steps-card-header {
-    background: var(--surface-3);
-    padding: 10px 16px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    background: var(--surface-3); padding: 10px 16px; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted);
+    border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 6px;
   }
   .step-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border-light);
-    transition: background 0.1s;
+    display: flex; align-items: flex-start; gap: 12px; padding: 11px 16px;
+    border-bottom: 1px solid var(--border-light); transition: background 0.1s;
   }
   .step-item:last-child { border-bottom: none; }
   .step-item:hover { background: var(--surface-2); }
+  .step-item.first { background: var(--accent-light); }
   .step-num {
-    min-width: 24px; height: 24px;
-    background: var(--accent);
-    color: #fff;
-    border-radius: 50%;
-    font-size: 11px;
-    font-weight: 600;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
-    font-family: 'DM Mono', monospace;
+    min-width: 24px; height: 24px; background: var(--accent); color: #fff; border-radius: 50%;
+    font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px; font-family: 'DM Mono', monospace;
   }
-  .step-text {
-    font-size: 13.5px;
-    line-height: 1.65;
-    color: var(--text-primary);
-    flex: 1;
-  }
+  .step-item.first .step-num { background: var(--red); }
+  .step-text { font-size: 13.5px; line-height: 1.6; color: var(--text-primary); flex: 1; }
   .step-text strong { font-weight: 600; color: var(--accent); }
-  .step-subs {
-    margin-top: 7px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
+  .step-subs { margin-top: 7px; display: flex; flex-direction: column; gap: 4px; }
   .step-sub-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 7px;
-    font-size: 12.5px;
-    color: var(--text-secondary);
-    line-height: 1.55;
-    padding-left: 2px;
+    display: flex; align-items: flex-start; gap: 7px; font-size: 12.5px;
+    color: var(--text-secondary); line-height: 1.5; padding-left: 2px;
   }
-  .step-sub-dot {
-    color: var(--accent-mid);
-    font-size: 14px;
-    line-height: 1.3;
-    flex-shrink: 0;
-    font-weight: 600;
-  }
+  .step-sub-dot { color: var(--accent-mid); font-size: 14px; line-height: 1.3; flex-shrink: 0; font-weight: 600; }
   .step-sub-item strong { font-weight: 600; color: var(--accent); }
 
-  .info-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    margin-bottom: 1rem;
-    box-shadow: var(--shadow);
-  }
-  .info-card-header {
-    background: var(--surface-3);
-    padding: 10px 16px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .info-card-body {
-    padding: 1rem 1.25rem;
-    font-size: 13.5px;
-    line-height: 1.8;
-    color: var(--text-primary);
-  }
-  .info-card-body p { margin-bottom: 0.6rem; }
-  .info-card-body p:last-child { margin-bottom: 0; }
-  .info-card-body strong { font-weight: 600; color: var(--accent); }
-
-  /* Contact card */
+  /* Contacts */
   .contact-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    margin-bottom: 1rem;
-    box-shadow: var(--shadow);
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    overflow: hidden; margin-bottom: 0.85rem; box-shadow: var(--shadow);
   }
   .contact-card-header {
-    background: var(--surface-3);
-    padding: 10px 16px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border);
+    background: var(--surface-3); padding: 10px 16px; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border);
   }
   .contact-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border-light);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px; border-bottom: 1px solid var(--border-light); gap: 10px;
   }
   .contact-item:last-child { border-bottom: none; }
-  .contact-left {
-    display: flex; align-items: center; gap: 10px;
-  }
+  .contact-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
   .contact-avatar {
-    width: 34px; height: 34px;
-    border-radius: 50%;
-    background: var(--accent-light);
-    border: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px;
-    color: var(--accent);
-    font-weight: 500;
+    width: 34px; height: 34px; border-radius: 50%; background: var(--accent-light);
+    border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--accent); font-weight: 500; flex-shrink: 0;
   }
   .contact-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
   .contact-title { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
-  .contact-gsm {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--accent-mid);
-    background: var(--accent-light);
-    padding: 4px 10px;
-    border-radius: 20px;
-    border: 1px solid rgba(44,82,130,0.15);
-  }
 
-  /* Meta row */
-  .meta-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
+  /* Tap-to-call button (used everywhere a GSM appears) */
+  .gsm-call {
+    font-family: 'DM Mono', monospace; font-size: 13px; color: #fff; background: var(--accent-mid);
+    padding: 7px 13px; border-radius: 20px; text-decoration: none; display: inline-flex;
+    align-items: center; gap: 5px; min-height: 34px; white-space: nowrap;
+    transition: background 0.15s; flex-shrink: 0;
   }
+  .gsm-call:hover, .gsm-call:active { background: var(--accent); }
+  .gsm-none { font-size: 12px; color: var(--text-muted); padding-right: 6px; }
+
+  /* Meta */
+  .meta-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; }
   .meta-pill {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 5px 12px;
-    font-size: 11px;
-    color: var(--text-secondary);
-    box-shadow: var(--shadow-sm);
+    display: flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; padding: 5px 12px; font-size: 11px; color: var(--text-secondary); box-shadow: var(--shadow-sm);
   }
-  .meta-pill-icon { font-size: 12px; }
   .meta-pill-label { color: var(--text-muted); }
   .meta-pill-value { font-weight: 500; }
 
-  /* Alert / section title in answer */
-  .answer-section-title {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    padding: 4px 0 6px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 10px;
-    display: flex; align-items: center; gap: 6px;
+  /* Collapsible background note */
+  .info-collapse {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    overflow: hidden; margin-bottom: 0.85rem; box-shadow: var(--shadow-sm);
   }
+  .info-collapse > summary {
+    list-style: none; cursor: pointer; padding: 11px 16px; font-size: 12px; font-weight: 600;
+    color: var(--text-secondary); display: flex; align-items: center; gap: 7px; user-select: none;
+  }
+  .info-collapse > summary::-webkit-details-marker { display: none; }
+  .info-collapse > summary::before { content: '▸'; color: var(--text-muted); font-size: 11px; transition: transform .15s; }
+  .info-collapse[open] > summary::before { transform: rotate(90deg); }
+  .info-collapse[open] > summary { border-bottom: 1px solid var(--border-light); }
+  .info-card-body { padding: 0.85rem 1.1rem; font-size: 13px; line-height: 1.7; color: var(--text-secondary); }
+  .info-card-body p { margin-bottom: 0.5rem; }
+  .info-card-body p:last-child { margin-bottom: 0; }
+  .info-card-body strong { font-weight: 600; color: var(--accent); }
 
   /* Error */
-  .error-card {
-    background: var(--red-light);
-    border: 1px solid #f5c2be;
-    border-radius: var(--radius);
-    padding: 1rem 1.25rem;
-    margin-top: 1rem;
-  }
-  .error-card p {
-    font-size: 13px;
-    color: var(--red);
-    line-height: 1.5;
-  }
+  .error-card { background: var(--red-light); border: 1px solid #f5c2be; border-radius: var(--radius); padding: 1rem 1.25rem; margin-top: 1rem; }
+  .error-card p { font-size: 13px; color: var(--red); line-height: 1.5; }
 
   /* Activation level banner */
   .level-banner {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-radius: var(--radius-lg);
-    padding: 14px 20px;
-    margin-bottom: 1rem;
-    box-shadow: var(--shadow-md);
-    background: var(--accent);
+    display: flex; align-items: center; gap: 12px; border-radius: var(--radius-lg);
+    padding: 14px 20px; margin-bottom: 0.85rem; box-shadow: var(--shadow-md); background: var(--accent);
   }
-  .level-banner-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    color: rgba(255,255,255,0.75);
-  }
-  .level-banner-value {
-    font-size: 21px;
-    font-weight: 700;
-    color: #fff;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.04em;
-  }
+  .level-banner-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: rgba(255,255,255,0.75); }
+  .level-banner-value { font-size: 21px; font-weight: 700; color: #fff; font-family: 'DM Mono', monospace; letter-spacing: 0.04em; }
   .level-banner.lv-c { background: linear-gradient(135deg, #b45309, #d97706); }
   .level-banner.lv-b { background: linear-gradient(135deg, #c0392b, #e0654f); }
   .level-banner.lv-a { background: linear-gradient(135deg, #6f1a12, #c0392b); }
 
   /* Tabs */
-  .tabbar { display:flex; gap:6px; margin-bottom:1.25rem; border-bottom:1px solid var(--border); }
+  .tabbar { display:flex; gap:4px; margin-bottom:1.25rem; border-bottom:1px solid var(--border); flex-wrap:wrap; }
   .tab {
     font-family:inherit; font-size:13px; font-weight:500; color:var(--text-secondary);
-    background:transparent; border:none; padding:10px 16px; cursor:pointer;
+    background:transparent; border:none; padding:10px 14px; cursor:pointer;
     border-bottom:2px solid transparent; margin-bottom:-1px; transition:all .15s;
   }
   .tab:hover { color:var(--accent); }
   .tab.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
 
-  /* Dispatch panel */
+  /* Dispatch */
   .dispatch-hint { font-size:12px; color:var(--text-muted); line-height:1.6; margin-bottom:14px; }
   .level-picker { display:flex; gap:10px; }
   .lv-btn {
     flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
     font-family:inherit; font-size:18px; font-weight:700; color:#fff; cursor:pointer;
-    border:none; border-radius:var(--radius); padding:14px 8px; transition:transform .1s, box-shadow .15s;
-    box-shadow:var(--shadow);
+    border:none; border-radius:var(--radius); padding:14px 8px; transition:transform .1s, box-shadow .15s; box-shadow:var(--shadow);
   }
   .lv-btn span { font-size:10px; font-weight:400; opacity:.85; letter-spacing:.02em; }
   .lv-btn:hover { transform:translateY(-1px); box-shadow:var(--shadow-md); }
@@ -674,7 +341,25 @@
   .send-result.ok { background:var(--green-light); border:1px solid #b6e2c9; color:var(--green); }
   .send-result.warn { background:var(--amber-light); border:1px solid #f4dca0; color:var(--amber); }
 
-  /* Utility */
+  /* Org chart (指揮體系) */
+  .org-intro { font-size:12px; color:var(--text-muted); line-height:1.6; margin-bottom:14px; }
+  .org-tier-label {
+    font-size:11px; font-weight:700; letter-spacing:.08em; color:var(--text-muted);
+    text-transform:uppercase; margin:1rem 0 .55rem; display:flex; align-items:center; gap:8px;
+  }
+  .org-tier-label::after { content:''; flex:1; height:1px; background:var(--border); }
+  .org-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .org-grid.single { grid-template-columns:1fr; }
+  @media (max-width:560px) { .org-grid { grid-template-columns:1fr; } }
+  .org-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow-sm); padding:12px 14px; }
+  .org-role { font-size:14px; font-weight:600; color:var(--accent); }
+  .org-duty { font-size:12px; color:var(--text-secondary); margin:3px 0 9px; line-height:1.5; }
+  .org-people { display:flex; flex-direction:column; gap:7px; }
+  .org-person { display:flex; align-items:center; gap:8px; }
+  .org-tag { font-size:10px; font-weight:600; color:#fff; background:var(--accent); border-radius:4px; padding:2px 7px; flex-shrink:0; }
+  .org-person.deputy .org-tag { background:var(--text-muted); }
+  .org-name { font-size:13px; font-weight:500; flex:1; min-width:0; }
+
   #mainPanel { display: none; }
 </style>
 </head>
@@ -728,11 +413,12 @@
   <div class="tabbar">
     <button class="tab active" id="tabBtnQa" onclick="switchTab('qa')">🔎 法規問答</button>
     <button class="tab" id="tabBtnDispatch" onclick="switchTab('dispatch')">🚨 召集啟動</button>
+    <button class="tab" id="tabBtnOrg" onclick="switchTab('org')">👥 指揮體系</button>
   </div>
 
+  <!-- ===== 法規問答 ===== -->
   <div id="tab-qa" class="tab-panel">
 
-  <!-- Question Input -->
   <div class="question-card">
     <div class="field-label" style="margin-bottom:8px;">提問</div>
     <textarea id="questionInput" placeholder="描述情境或提問，例如：&#10;現在是晚上11點，來了35個傷患其中8人重大外傷，我要怎麼做？&#10;ECMO只剩1台同時ICU也快滿了怎麼辦？"></textarea>
@@ -750,12 +436,10 @@
     </div>
   </div>
 
-  <!-- Answer Area -->
   <div id="answerArea" style="display:none;">
 
     <div class="divider">分析結果</div>
 
-    <!-- Question Echo -->
     <div class="q-echo">
       <div class="q-echo-icon">💬</div>
       <div>
@@ -764,7 +448,6 @@
       </div>
     </div>
 
-    <!-- Loading -->
     <div id="loadingIndicator" style="display:none;">
       <div class="loading-card">
         <div class="loading-bar"><div class="loading-bar-fill"></div></div>
@@ -772,49 +455,41 @@
       </div>
     </div>
 
-    <!-- Answer Content -->
     <div id="answerContent" style="display:none;">
 
-      <!-- Activation level banner -->
       <div id="levelBanner" class="level-banner" style="display:none;">
         <span class="level-banner-label">啟動級數</span>
         <span class="level-banner-value" id="levelValue"></span>
       </div>
 
-      <!-- Main answer -->
       <div id="answerHeaderCard" class="answer-header-card" style="display:none;">
-        <div class="answer-header-label">回答摘要</div>
+        <div class="answer-header-label">一句話重點</div>
         <div class="answer-header-text" id="answerSummary"></div>
       </div>
 
-      <!-- Steps -->
       <div id="stepsCard" class="steps-card" style="display:none;">
-        <div class="steps-card-header">📋 行動步驟</div>
+        <div class="steps-card-header">📋 立即行動（依序）</div>
         <div id="stepsList"></div>
       </div>
 
-      <!-- Info blocks (non-step paragraphs after steps) -->
-      <div id="infoCard" class="info-card" style="display:none;">
-        <div class="info-card-header">📌 補充說明</div>
-        <div class="info-card-body" id="infoBody"></div>
-      </div>
-
-      <!-- Contacts -->
       <div id="contactsCard" class="contact-card" style="display:none;">
-        <div class="contact-card-header">👥 相關聯繫人</div>
+        <div class="contact-card-header">📞 立即聯繫（點號碼撥打）</div>
         <div id="contactsList"></div>
       </div>
 
-      <!-- Meta -->
+      <details id="infoCard" class="info-collapse" style="display:none;">
+        <summary>背景說明（需要時點開）</summary>
+        <div class="info-card-body" id="infoBody"></div>
+      </details>
+
       <div class="meta-row" id="metaRow">
         <div class="meta-pill">
-          <span class="meta-pill-icon">📄</span>
+          <span>📄</span>
           <span class="meta-pill-label">來源：</span>
           <span class="meta-pill-value" id="sourceText">大量傷患救護作業要點</span>
         </div>
       </div>
 
-      <!-- Error -->
       <div id="errorMsg" class="error-card" style="display:none;">
         <p id="errorText"></p>
       </div>
@@ -823,11 +498,11 @@
   </div>
   </div><!-- /tab-qa -->
 
-  <!-- ===== 召集啟動分頁 ===== -->
+  <!-- ===== 召集啟動 ===== -->
   <div id="tab-dispatch" class="tab-panel" style="display:none;">
     <div class="question-card">
       <div class="field-label" style="margin-bottom:8px;">啟動級數</div>
-      <div class="dispatch-hint">選擇要啟動的動員等級，系統會列出該級應召集的人員供您核對；確認後才發送。預設為「演習模式」，只預覽不真送。</div>
+      <div class="dispatch-hint">選擇要啟動的動員等級，系統會列出該級應召集的人員（含主責與代理）供您核對；確認後才發送。預設為「演習模式」，只預覽不真送。</div>
       <div class="level-picker">
         <button class="lv-btn lv-c-btn" onclick="selectLevel('C級')">C級<span>16-50人 / 重大外傷6-10</span></button>
         <button class="lv-btn lv-b-btn" onclick="selectLevel('B級')">B級<span>51-100人 / 11-20</span></button>
@@ -840,12 +515,18 @@
       <div class="divider">召集名單預覽</div>
       <div id="previewBanner" class="level-banner"></div>
       <div class="contact-card">
-        <div class="contact-card-header">👥 將通知人員（<span id="previewCount">0</span> 人）</div>
+        <div class="contact-card-header">👥 將通知人員（<span id="previewCount">0</span> 人，點號碼可撥打）</div>
         <div id="previewList"></div>
       </div>
       <button class="btn-danger" id="confirmSendBtn" onclick="confirmSend()">確認發送 →</button>
       <div id="sendResult" class="send-result" style="display:none;"></div>
     </div>
+  </div>
+
+  <!-- ===== 指揮體系（組織架構） ===== -->
+  <div id="tab-org" class="tab-panel" style="display:none;">
+    <div class="org-intro">大量傷患應變指揮體系。每個角色列出主責與代理，點電話號碼可直接撥打。資料來源為「人員」表，換人時於該表更新即可。</div>
+    <div id="orgBody"></div>
   </div>
 
 </div>
@@ -859,6 +540,24 @@ let qaData = [];
 let roster = [];
 let selectedLevel = '';
 let currentRecipients = [];
+
+// 命令體系角色的顯示順序（指揮 → 幕僚 → 隊長/組長）
+const ORG_TIERS = [
+  { label: '指揮', roles: ['指揮官'] },
+  { label: '幕僚', roles: ['聯絡官', '安全官', '新聞官'] },
+  { label: '隊長／組長', roles: ['醫護隊長', '後勤隊長', '計畫組長'] }
+];
+
+function escHtml(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function telHref(g) {
+  return 'tel:' + String(g || '').replace(/[^0-9+]/g, '').slice(0, 20);
+}
+function callBtn(gsm) {
+  if (!gsm) return '<span class="gsm-none">—</span>';
+  return `<a class="gsm-call" href="${telHref(gsm)}">📞 ${escHtml(gsm)}</a>`;
+}
 
 function saveKeys() {
   const ak = document.getElementById('anthropicKeyInput').value.trim();
@@ -903,10 +602,10 @@ async function loadAirtableData() {
       source: r.fields['來源條文'] || '',
       steps: r.fields['行動步驟'] || '',
       role: r.fields['負責角色'] || '',
-      contacts: r.fields['現任聯繫（帶出）'] || [],   // ← Lookup 帶出的現任姓名＋GSM（含主／代理）
+      contacts: r.fields['現任聯繫（帶出）'] || [],
     })).filter(r => r.key);
 
-    // 額外載入「人員」表，取得完整指揮體系名冊（含主／代理），讓任何情境都查得到聯絡人
+    // 載入「人員」表：主、代理現在同一列（主放 現任姓名/GSM，代理放 代理人姓名/代理GSM）
     roster = [];
     let pRecords = [], pOffset = null;
     do {
@@ -918,17 +617,20 @@ async function loadAirtableData() {
       pOffset = pdata.offset;
     } while (pOffset);
     roster = pRecords.map(r => ({
-      card:   r.fields['聯絡卡']   || '',
-      role:   r.fields['應變角色'] || '',
-      order:  r.fields['召集順位'] || '',
-      levels: r.fields['召集等級'] || [],
-      name:   r.fields['現任姓名'] || '',
-      gsm:    r.fields['GSM']      || '',
-      title:  r.fields['職稱']     || ''
-    })).filter(r => r.card);
+      role:        r.fields['應變角色'] || '',
+      levels:      r.fields['召集等級'] || [],
+      name:        r.fields['現任姓名'] || '',
+      gsm:         r.fields['GSM']      || '',
+      title:       r.fields['職稱']     || '',
+      duty:        r.fields['簡潔職責'] || '',
+      deputyName:  r.fields['代理人姓名'] || '',
+      deputyGsm:   r.fields['代理GSM']   || '',
+      deputyTitle: r.fields['代理職稱'] || ''
+    })).filter(r => r.title);
 
     document.getElementById('statusDot').className = 'nav-status-dot connected';
     document.getElementById('statusText').textContent = `${qaData.length} 筆法規、${roster.length} 位人員已載入`;
+    renderOrg();
   } catch (err) {
     document.getElementById('statusDot').className = 'nav-status-dot';
     document.getElementById('statusText').textContent = '載入失敗';
@@ -946,31 +648,25 @@ function buildSystemPrompt() {
 JSON 結構如下（所有欄位使用繁體中文）：
 {
   "level": "本次研判的大傷啟動級數，僅填 C級／B級／A級 其中之一；若未達啟動標準或無法判斷，填「—」",
-  "summary": "精簡摘要，2至4句話：適用情境、動員等級、關鍵判斷。詳細流程放 steps、背景說明放 info，切勿把全部內容塞進 summary。純文字，不含 markdown。",
+  "summary": "一句話重點，最多2句：適用情境＋最關鍵的判斷或動作。其餘流程一律放 steps、背景放 info。純文字、不含 markdown。",
   "steps": [
-    {
-      "title": "步驟主旨（一句話）",
-      "subs": ["子項目1", "子項目2"]
-    }
+    { "title": "步驟主旨（一句話、祈使句、可立即執行）", "subs": ["子項目1", "子項目2"] }
   ],
-  "info": "補充說明段落，若無則填空字串",
+  "info": "背景或補充說明段落，若無則填空字串",
   "contacts": [
-    { "name": "姓名", "title": "職稱", "gsm": "號碼", "note": "備註如代理人，若無填空字串" }
+    { "name": "姓名", "title": "職稱", "gsm": "號碼", "note": "備註如主／代理，若無填空字串" }
   ],
   "source": "來源條文名稱"
 }
 
 規則：
-- steps 若無則填空陣列 []
-- contacts 若無則填空陣列 []
-- subs 若無則填空陣列 []
-- summary 必填，不可為空
-- summary 控制在 4 句以內；詳細流程一律放 steps、背景說明放 info，避免 summary 過長導致回應被截斷
-- level 必填：依傷病患人數或重大外傷人數研判（C級＝16-50人或重大外傷6-10人；B級＝51-100人或11-20人；A級＝101人以上或21人以上）；情境未提供人數或無法判斷時填「—」
-- 行動步驟中凡涉及聯繫、通知或回報某角色，且資料庫「聯繫」欄有該角色的現任姓名與 GSM，請在該步驟文字中直接帶出，格式如「聯繫醫護隊長（吳冠漢 GSM:56661）」，讓現場能立即撥號
-- 回答涉及指揮體系角色（指揮官、聯絡官、安全官、新聞官、計畫組長、醫護隊長、後勤隊長）時，務必同時把該角色的「主」與「代理」兩人放入 contacts，姓名與 GSM 一律以下方「現任名冊」為準（主排在代理前面）
+- steps、contacts、subs 若無一律填空陣列 []
+- summary 必填、最多 2 句；把最優先要做的一件事放在 steps 第一項，讓現場第一眼就知道先做什麼
+- 詳細流程一律放 steps、背景說明放 info，避免 summary 過長被截斷
+- level 必填：依傷病患人數或重大外傷人數研判（C級＝16-50人或重大外傷6-10人；B級＝51-100人或11-20人；A級＝101人以上或21人以上）；未提供人數或無法判斷時填「—」
+- 行動步驟中凡涉及聯繫、通知或回報某角色，且名冊有該角色現任姓名與 GSM，請在該步驟文字中直接帶出，格式如「聯繫醫護隊長（吳冠漢 GSM:56661）」，讓現場能立即撥號
+- 回答涉及指揮體系角色（指揮官、聯絡官、安全官、新聞官、計畫組長、醫護隊長、後勤隊長）時，務必把該角色的「主」與「代理」兩人都放入 contacts，主排在代理前面，note 標明「主」或「代理」；姓名與 GSM 一律以下方「現任名冊」為準
 - 只根據資料庫內容回答，不自行發明資訊
-- 聯繫人資料若標有「主」或「代理」，請於 contacts 的 note 欄位標明，並讓「主」排在「代理」前面
 - 回傳純 JSON，第一個字元必須是 {，最後一個字元必須是 }
 
 === 法規問答資料庫 ===\n\n`;
@@ -980,7 +676,6 @@ JSON 結構如下（所有欄位使用繁體中文）：
     if (qa.questions) prompt += `問：${qa.questions}\n`;
     if (qa.answer) prompt += `答：${qa.answer}\n`;
     if (qa.steps) prompt += `步驟：${qa.steps}\n`;
-    // 聯繫人優先用 Lookup 帶出的現任資料（單一來源、含主／代理）；沒連結的記錄退回負責角色文字
     const contactInfo = (qa.contacts && qa.contacts.length) ? qa.contacts.join('；') : qa.role;
     if (contactInfo) prompt += `聯繫：${contactInfo}\n`;
     if (qa.source) prompt += `來源：${qa.source}\n`;
@@ -990,7 +685,13 @@ JSON 結構如下（所有欄位使用繁體中文）：
   if (roster.length) {
     prompt += `=== 指揮體系與資源窗口現任名冊（主／代理皆已列出，為現任聯絡資料的權威來源）===\n`;
     prompt += `（凡回答涉及某指揮體系角色，務必從這裡帶出該角色「主」與「代理」兩人的現任姓名與 GSM 放入 contacts；也用於回答「誰是指揮官／安全官」「○○的代理是誰」等問題。）\n`;
-    roster.forEach(c => { prompt += `‧ ${c.card}\n`; });
+    roster.forEach(c => {
+      let line = `‧ ${c.role || c.title}`;
+      if (c.name) line += `｜主：${c.name}（GSM ${c.gsm || '—'}）`;
+      if (c.deputyName) line += `｜代理：${c.deputyName}（GSM ${c.deputyGsm || '—'}）`;
+      if (c.duty) line += `｜職責：${c.duty}`;
+      prompt += line + '\n';
+    });
     prompt += '\n';
   }
 
@@ -998,12 +699,9 @@ JSON 結構如下（所有欄位使用繁體中文）：
 }
 
 function parseAnswer(text) {
-  // 1. Strip markdown code fences if present
   let clean = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
 
-  // 2. If JSON is truncated (API hit max_tokens), attempt to repair it
   if (!clean.endsWith('}')) {
-    // 2a. If the text ended inside a string, close that string first
     let inStr = false, esc = false;
     for (const ch of clean) {
       if (esc) { esc = false; continue; }
@@ -1011,10 +709,8 @@ function parseAnswer(text) {
       if (ch === '"') inStr = !inStr;
     }
     if (inStr) clean += '"';
-    // 2b. Drop a dangling trailing comma or an incomplete "key":
     clean = clean.replace(/[\s,]+$/, '');
     clean = clean.replace(/:\s*$/, '');
-    // 2c. Balance unclosed { and [ (ignoring brackets inside strings)
     const stack = [];
     inStr = false; esc = false;
     for (const ch of clean) {
@@ -1041,7 +737,6 @@ function parseAnswer(text) {
       source:   typeof d.source   === 'string' ? d.source   : '大量傷患救護作業要點',
     };
   } catch (e) {
-    // Show a friendly parse error instead of raw JSON
     return {
       summary: '',
       steps: [],
@@ -1054,8 +749,7 @@ function parseAnswer(text) {
 }
 
 function renderInline(text) {
-  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  return escHtml(text).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 }
 
 function quickAsk(q) {
@@ -1104,11 +798,10 @@ async function askQuestion() {
     const fullText = data.content?.[0]?.text || '';
     const parsed = parseAnswer(fullText);
 
-    // Render
     document.getElementById('loadingIndicator').style.display = 'none';
     document.getElementById('answerContent').style.display = 'block';
 
-    // Activation level banner
+    // Level banner
     const lv = (parsed.level || '').trim();
     const banner = document.getElementById('levelBanner');
     if (lv && lv !== '—') {
@@ -1119,27 +812,24 @@ async function askQuestion() {
       banner.style.display = 'none';
     }
 
-    // Summary card — now a plain string
+    // Summary
     if (parsed.summary) {
       document.getElementById('answerHeaderCard').style.display = 'block';
-      document.getElementById('answerSummary').innerHTML = parsed.summary.replace(/\n/g, '<br>');
+      document.getElementById('answerSummary').innerHTML = escHtml(parsed.summary).replace(/\n/g, '<br>');
     } else {
       document.getElementById('answerHeaderCard').style.display = 'none';
     }
 
-    // Steps card
+    // Steps (first step highlighted as the immediate action)
     if (parsed.steps.length) {
       document.getElementById('stepsCard').style.display = 'block';
       document.getElementById('stepsList').innerHTML = parsed.steps.map((s, i) => {
         const subsHtml = s.subs && s.subs.length
           ? `<div class="step-subs">${s.subs.map(sub =>
-              `<div class="step-sub-item">
-                <span class="step-sub-dot">›</span>
-                <span>${renderInline(sub)}</span>
-              </div>`
+              `<div class="step-sub-item"><span class="step-sub-dot">›</span><span>${renderInline(sub)}</span></div>`
             ).join('')}</div>`
           : '';
-        return `<div class="step-item">
+        return `<div class="step-item${i === 0 ? ' first' : ''}">
           <div class="step-num">${i+1}</div>
           <div class="step-text">${renderInline(s.title)}${subsHtml}</div>
         </div>`;
@@ -1148,36 +838,36 @@ async function askQuestion() {
       document.getElementById('stepsCard').style.display = 'none';
     }
 
-    // Info card — now a plain string
-    if (parsed.info && parsed.info.trim()) {
-      document.getElementById('infoCard').style.display = 'block';
-      document.getElementById('infoBody').innerHTML = parsed.info.trim().split('\n')
-        .filter(l => l.trim())
-        .map(l => `<p>${renderInline(l)}</p>`).join('');
-    } else {
-      document.getElementById('infoCard').style.display = 'none';
-    }
-
-    // Contacts — now has optional .note field
+    // Contacts (tap-to-call)
     if (parsed.contacts.length) {
       document.getElementById('contactsCard').style.display = 'block';
       document.getElementById('contactsList').innerHTML = parsed.contacts.map(c => `
         <div class="contact-item">
           <div class="contact-left">
-            <div class="contact-avatar">${c.name.charAt(0)}</div>
+            <div class="contact-avatar">${escHtml((c.name||'？').charAt(0))}</div>
             <div>
-              <div class="contact-name">${c.name}</div>
-              <div class="contact-title">${c.title}${c.note ? ' · ' + c.note : ''}</div>
+              <div class="contact-name">${escHtml(c.name)}</div>
+              <div class="contact-title">${escHtml(c.title)}${c.note ? ' · ' + escHtml(c.note) : ''}</div>
             </div>
           </div>
-          <span class="contact-gsm">GSM ${c.gsm}</span>
+          ${callBtn(c.gsm)}
         </div>
       `).join('');
     } else {
       document.getElementById('contactsCard').style.display = 'none';
     }
 
-    // Source
+    // Background note (collapsed by default)
+    const info = document.getElementById('infoCard');
+    if (parsed.info && parsed.info.trim()) {
+      info.style.display = 'block';
+      info.open = false;
+      document.getElementById('infoBody').innerHTML = parsed.info.trim().split('\n')
+        .filter(l => l.trim()).map(l => `<p>${renderInline(l)}</p>`).join('');
+    } else {
+      info.style.display = 'none';
+    }
+
     document.getElementById('sourceText').textContent = parsed.source;
 
   } catch (err) {
@@ -1201,19 +891,66 @@ document.getElementById('questionInput').addEventListener('keydown', e => {
 
 // ===== 分頁切換 =====
 function switchTab(tab) {
-  document.getElementById('tab-qa').style.display = (tab === 'qa') ? 'block' : 'none';
-  document.getElementById('tab-dispatch').style.display = (tab === 'dispatch') ? 'block' : 'none';
-  document.getElementById('tabBtnQa').classList.toggle('active', tab === 'qa');
-  document.getElementById('tabBtnDispatch').classList.toggle('active', tab === 'dispatch');
+  ['qa', 'dispatch', 'org'].forEach(t => {
+    document.getElementById('tab-' + t).style.display = (t === tab) ? 'block' : 'none';
+    const btn = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+    if (btn) btn.classList.toggle('active', t === tab);
+  });
+  if (tab === 'org') renderOrg();
 }
 
-// ===== 召集啟動：選級數 → 預覽名單 =====
+// ===== 指揮體系（組織架構） =====
+function orgPersonRow(tag, name, gsm) {
+  if (!name) return '';
+  return `<div class="org-person${tag === '代理' ? ' deputy' : ''}">
+    <span class="org-tag">${tag}</span>
+    <span class="org-name">${escHtml(name)}</span>
+    ${callBtn(gsm)}
+  </div>`;
+}
+
+function renderOrg() {
+  const body = document.getElementById('orgBody');
+  if (!body) return;
+  if (!roster.length) {
+    body.innerHTML = '<div style="padding:14px 4px;color:var(--text-muted);font-size:13px;">名冊尚未載入，請稍候或點右上「重新載入」。</div>';
+    return;
+  }
+  const byRole = {};
+  roster.forEach(p => { if (p.role && !byRole[p.role]) byRole[p.role] = p; });
+
+  let html = '';
+  ORG_TIERS.forEach(t => {
+    const cards = t.roles.map(rn => byRole[rn]).filter(Boolean);
+    if (!cards.length) return;
+    html += `<div class="org-tier-label">${t.label}</div>`;
+    html += `<div class="org-grid${cards.length === 1 ? ' single' : ''}">`;
+    cards.forEach(p => {
+      html += `<div class="org-card">
+        <div class="org-role">${escHtml(p.role)}</div>
+        ${p.duty ? `<div class="org-duty">${escHtml(p.duty)}</div>` : ''}
+        <div class="org-people">
+          ${orgPersonRow('主', p.name, p.gsm)}
+          ${orgPersonRow('代理', p.deputyName, p.deputyGsm)}
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  body.innerHTML = html || '<div style="padding:14px 4px;color:var(--text-muted);font-size:13px;">名冊中尚無標記「應變角色」的指揮體系人員。</div>';
+}
+
+// ===== 召集啟動：選級數 → 預覽名單（含主+代理） =====
 function selectLevel(level) {
   if (!roster.length) { alert('人員名冊尚未載入，請稍候或點「重新載入」'); return; }
   selectedLevel = level;
-  currentRecipients = roster.filter(p => Array.isArray(p.levels) && p.levels.includes(level));
-  // 主排在代理前面
-  currentRecipients.sort((a, b) => (a.order === '主' ? 0 : 1) - (b.order === '主' ? 0 : 1));
+
+  const matched = roster.filter(p => Array.isArray(p.levels) && p.levels.includes(level));
+  currentRecipients = [];
+  matched.forEach(p => {
+    if (p.name) currentRecipients.push({ role: p.role || p.title, order: '主', name: p.name, gsm: p.gsm });
+    if (p.deputyName) currentRecipients.push({ role: p.role || p.title, order: '代理', name: p.deputyName, gsm: p.deputyGsm });
+  });
 
   document.querySelectorAll('.lv-btn').forEach(b => b.classList.remove('active'));
   const map = { 'C級': 'lv-c-btn', 'B級': 'lv-b-btn', 'A級': 'lv-a-btn' };
@@ -1230,13 +967,13 @@ function selectLevel(level) {
     ? currentRecipients.map(p => `
         <div class="contact-item">
           <div class="contact-left">
-            <div class="contact-avatar">${(p.name || p.title || '？').charAt(0)}</div>
+            <div class="contact-avatar">${escHtml((p.name || p.role || '？').charAt(0))}</div>
             <div>
-              <div class="contact-name">${p.name || '（輪值）'}</div>
-              <div class="contact-title">${p.role || p.title}${p.order ? ' · ' + p.order : ''}</div>
+              <div class="contact-name">${escHtml(p.name || '（輪值）')}</div>
+              <div class="contact-title">${escHtml(p.role)}${p.order ? ' · ' + p.order : ''}</div>
             </div>
           </div>
-          <span class="contact-gsm">GSM ${p.gsm || '—'}</span>
+          ${callBtn(p.gsm)}
         </div>`).join('')
     : '<div style="padding:14px 16px;color:var(--text-muted);font-size:13px;">此級別查無對應人員，請確認「人員」表的「召集等級」欄已標記。</div>';
 
