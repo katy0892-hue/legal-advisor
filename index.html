@@ -783,7 +783,9 @@
 <script>
 const BASE_ID = 'app4I4h25azllFSve';
 const TABLE_ID = 'tblaKjjZVMCnKdsNT';
+const PEOPLE_TABLE_ID = 'tblaCe6Qpa8xKbWPq';
 let qaData = [];
+let roster = [];
 
 function saveKeys() {
   const ak = document.getElementById('anthropicKeyInput').value.trim();
@@ -828,11 +830,28 @@ async function loadAirtableData() {
       source: r.fields['來源條文'] || '',
       steps: r.fields['行動步驟'] || '',
       role: r.fields['負責角色'] || '',
-      contacts: r.fields['現任聯繫（帶出）'] || [],   // ← 新增：Lookup 帶出的現任姓名＋GSM（含主／代理）
+      contacts: r.fields['現任聯繫（帶出）'] || [],   // ← Lookup 帶出的現任姓名＋GSM（含主／代理）
     })).filter(r => r.key);
 
+    // 額外載入「人員」表，取得完整指揮體系名冊（含主／代理），讓任何情境都查得到聯絡人
+    roster = [];
+    let pRecords = [], pOffset = null;
+    do {
+      const purl = `https://api.airtable.com/v0/${BASE_ID}/${PEOPLE_TABLE_ID}?pageSize=100${pOffset ? '&offset=' + pOffset : ''}`;
+      const pres = await fetch(purl, { headers: { 'Authorization': 'Bearer ' + token } });
+      if (!pres.ok) throw new Error('人員表讀取失敗：' + pres.status);
+      const pdata = await pres.json();
+      pRecords = pRecords.concat(pdata.records);
+      pOffset = pdata.offset;
+    } while (pOffset);
+    roster = pRecords.map(r => ({
+      card:  r.fields['聯絡卡']   || '',
+      role:  r.fields['應變角色'] || '',
+      order: r.fields['召集順位'] || ''
+    })).filter(r => r.card);
+
     document.getElementById('statusDot').className = 'nav-status-dot connected';
-    document.getElementById('statusText').textContent = `${qaData.length} 筆法規已載入`;
+    document.getElementById('statusText').textContent = `${qaData.length} 筆法規、${roster.length} 位人員已載入`;
   } catch (err) {
     document.getElementById('statusDot').className = 'nav-status-dot';
     document.getElementById('statusText').textContent = '載入失敗';
@@ -872,6 +891,7 @@ JSON 結構如下（所有欄位使用繁體中文）：
 - summary 控制在 4 句以內；詳細流程一律放 steps、背景說明放 info，避免 summary 過長導致回應被截斷
 - level 必填：依傷病患人數或重大外傷人數研判（C級＝16-50人或重大外傷6-10人；B級＝51-100人或11-20人；A級＝101人以上或21人以上）；情境未提供人數或無法判斷時填「—」
 - 行動步驟中凡涉及聯繫、通知或回報某角色，且資料庫「聯繫」欄有該角色的現任姓名與 GSM，請在該步驟文字中直接帶出，格式如「聯繫醫護隊長（吳冠漢 GSM:56661）」，讓現場能立即撥號
+- 回答涉及指揮體系角色（指揮官、聯絡官、安全官、新聞官、計畫組長、醫護隊長、後勤隊長）時，務必同時把該角色的「主」與「代理」兩人放入 contacts，姓名與 GSM 一律以下方「現任名冊」為準（主排在代理前面）
 - 只根據資料庫內容回答，不自行發明資訊
 - 聯繫人資料若標有「主」或「代理」，請於 contacts 的 note 欄位標明，並讓「主」排在「代理」前面
 - 回傳純 JSON，第一個字元必須是 {，最後一個字元必須是 }
@@ -889,6 +909,14 @@ JSON 結構如下（所有欄位使用繁體中文）：
     if (qa.source) prompt += `來源：${qa.source}\n`;
     prompt += '\n';
   });
+
+  if (roster.length) {
+    prompt += `=== 指揮體系與資源窗口現任名冊（主／代理皆已列出，為現任聯絡資料的權威來源）===\n`;
+    prompt += `（凡回答涉及某指揮體系角色，務必從這裡帶出該角色「主」與「代理」兩人的現任姓名與 GSM 放入 contacts；也用於回答「誰是指揮官／安全官」「○○的代理是誰」等問題。）\n`;
+    roster.forEach(c => { prompt += `‧ ${c.card}\n`; });
+    prompt += '\n';
+  }
+
   return prompt;
 }
 
